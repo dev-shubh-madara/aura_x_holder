@@ -34,10 +34,10 @@ async def ping_cmd(_, msg: Message):
 
     caption = (
         f"🏓 <b>ᴘᴏɴɢ!</b>\n\n"
-        f"⚡ ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
+        f"{pe('zap','⚡')} ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
         f"🤖 ʙᴏᴛ: <b>{BOT_NAME}</b>\n"
-        f"📦 ᴠᴇʀsɪᴏɴ: <code>{VERSION}</code>\n"
-        f"✅ sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ\n\n"
+        f"{pe('package','📦')} ᴠᴇʀsɪᴏɴ: <code>{VERSION}</code>\n"
+        f"{pe('checkmark','✅')} sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ &amp; ʀᴇᴀᴅʏ\n\n"
         f"<i>{POWERED_BY}</i>"
     )
     await sent.delete()

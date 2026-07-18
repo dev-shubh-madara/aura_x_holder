@@ -17,15 +17,13 @@ def _eid(name: str) -> str | None:
 
 def _build(text: str, style=None, data: str = None, url: str = None,
            emoji: str = None) -> InlineKeyboardButton:
-    """Internal factory. icon_custom_emoji_id disabled until verified IDs are set."""
+    """Internal factory. icon_custom_emoji_id uses verified real document IDs."""
     kwargs = {}
     if style is not None:
         kwargs["style"] = style
-    # NOTE: icon_custom_emoji_id requires verified real Telegram custom-emoji
-    # document IDs. Leave disabled to avoid DOCUMENT_INVALID errors.
-    # eid = _eid(emoji) if emoji else None
-    # if eid:
-    #     kwargs["icon_custom_emoji_id"] = eid
+    eid = _eid(emoji) if emoji else None
+    if eid:
+        kwargs["icon_custom_emoji_id"] = int(eid)
     if url:
         return InlineKeyboardButton(text, url=url, **kwargs)
     return InlineKeyboardButton(text, callback_data=data, **kwargs)
