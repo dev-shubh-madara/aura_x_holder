@@ -33,20 +33,32 @@ async def ping_cmd(_, msg: Message):
     ms    = int((time.time() - start) * 1000)
 
     caption = (
-        f"{pe('ping', '🏓')} <b>ᴘᴏɴɢ!</b>\n\n"
-        f"{pe('zap', '⚡')} ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
+        f"🏓 <b>ᴘᴏɴɢ!</b>\n\n"
+        f"⚡ ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
         f"🤖 ʙᴏᴛ: <b>{BOT_NAME}</b>\n"
         f"📦 ᴠᴇʀsɪᴏɴ: <code>{VERSION}</code>\n"
-        f"{pe('fire', '✅')} sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ\n\n"
+        f"✅ sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ\n\n"
         f"<i>{POWERED_BY}</i>"
     )
     await sent.delete()
+    replied = False
     if os.path.exists(PING_VIDEO):
-        await msg.reply_video(PING_VIDEO, caption=caption, parse_mode=ParseMode.HTML,
-                              has_spoiler=True)
-    elif os.path.exists(PING_IMAGE):
-        await msg.reply_photo(PING_IMAGE, caption=caption, parse_mode=ParseMode.HTML)
-    else:
+        try:
+            await msg.reply_video(
+                PING_VIDEO, caption=caption, parse_mode=ParseMode.HTML,
+                no_sound=False, supports_streaming=True,
+                width=1280, height=720, duration=10,
+            )
+            replied = True
+        except Exception:
+            pass
+    if not replied and os.path.exists(PING_IMAGE):
+        try:
+            await msg.reply_photo(PING_IMAGE, caption=caption, parse_mode=ParseMode.HTML)
+            replied = True
+        except Exception:
+            pass
+    if not replied:
         await msg.reply(caption, parse_mode=ParseMode.HTML)
 
 

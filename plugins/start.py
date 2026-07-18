@@ -30,25 +30,37 @@ async def start_private(_, msg: Message):
     )
     name = msg.from_user.first_name or "ᴘʟᴀʏᴇʀ"
     caption = (
-        f"{pe('crown', '👑')} <b>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {BOT_NAME}!</b>\n"
+        f"👑 <b>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {BOT_NAME}!</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
         f"👋 ʜᴇʏ <b>{name}</b>! ɪ'ᴍ ᴛʜᴇ ᴜʟᴛɪᴍᴀᴛᴇ ɢᴀᴍɪɴɢ ʙᴏᴛ!\n\n"
-        f"{pe('game', '🎮')} ᴘʟᴀʏ ᴄᴀʀᴅ ɢᴀᴍᴇs, ʙᴏᴍʙ ᴘᴀssᴇs &amp; ʜᴀᴄᴋɪɴɢ\n"
-        f"{pe('sword', '⚔️')} ᴀᴛᴛᴀᴄᴋ, ʀᴏʙ &amp; ᴅᴏᴍɪɴᴀᴛᴇ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀs\n"
-        f"{pe('heart', '💘')} ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ &amp; ᴇɴᴊᴏʏ ʀᴇᴡᴀʀᴅs\n"
-        f"{pe('coin', '🪙')} ᴇᴀʀɴ ᴅᴀɪʟʏ ᴄᴏɪɴs &amp; ᴄʟɪᴍʙ ᴛʜᴇ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ!\n\n"
-        f"{pe('coin', '🪙')} <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code>  "
-        f"{pe('star', '⭐')} <b>ᴡɪɴs:</b> <code>{user['wins']}</code>\n\n"
+        f"🎮 ᴘʟᴀʏ ᴄᴀʀᴅ ɢᴀᴍᴇs, ʙᴏᴍʙ ᴘᴀssᴇs &amp; ʜᴀᴄᴋɪɴɢ\n"
+        f"⚔️ ᴀᴛᴛᴀᴄᴋ, ʀᴏʙ &amp; ᴅᴏᴍɪɴᴀᴛᴇ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀs\n"
+        f"💘 ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ &amp; ᴇɴᴊᴏʏ ʀᴇᴡᴀʀᴅs\n"
+        f"🪙 ᴇᴀʀɴ ᴅᴀɪʟʏ ᴄᴏɪɴs &amp; ᴄʟɪᴍʙ ᴛʜᴇ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ!\n\n"
+        f"🪙 <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code>  "
+        f"⭐ <b>ᴡɪɴs:</b> <code>{user['wins']}</code>\n\n"
         f"<i>{POWERED_BY} | {VERSION}</i>"
     )
+    sent = False
     if os.path.exists(START_VIDEO):
-        await msg.reply_video(START_VIDEO, caption=caption,
-                              reply_markup=start_keyboard(), parse_mode=ParseMode.HTML,
-                              has_spoiler=True)
-    elif os.path.exists(START_IMAGE):
-        await msg.reply_photo(START_IMAGE, caption=caption,
-                              reply_markup=start_keyboard(), parse_mode=ParseMode.HTML)
-    else:
+        try:
+            await msg.reply_video(
+                START_VIDEO, caption=caption,
+                reply_markup=start_keyboard(), parse_mode=ParseMode.HTML,
+                no_sound=False, supports_streaming=True,
+                width=720, height=1280, duration=52,
+            )
+            sent = True
+        except Exception as e:
+            print(f"[start] reply_video failed: {e}")
+    if not sent and os.path.exists(START_IMAGE):
+        try:
+            await msg.reply_photo(START_IMAGE, caption=caption,
+                                  reply_markup=start_keyboard(), parse_mode=ParseMode.HTML)
+            sent = True
+        except Exception as e:
+            print(f"[start] reply_photo failed: {e}")
+    if not sent:
         await msg.reply(caption, reply_markup=start_keyboard(), parse_mode=ParseMode.HTML)
 
 
