@@ -22,7 +22,7 @@ from database import (
     get_or_create_user, get_balance, update_coins, record_win, record_loss
 )
 from utils.buttons import keyboard, primary_btn, success_btn, danger_btn, btn
-from config import POWERED_BY
+from config import POWERED_BY, pe
 
 
 hack_games: dict[int, dict] = {}

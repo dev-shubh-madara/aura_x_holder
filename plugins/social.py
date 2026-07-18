@@ -12,7 +12,7 @@ from database import (
     get_or_create_user, get_relationship, set_relationship,
     update_coins, get_balance
 )
-from config import POWERED_BY, DIVORCE_COST
+from config import POWERED_BY, DIVORCE_COST, pe
 
 
 # ─── /propose @username ───────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ from config import POWERED_BY, DIVORCE_COST
 async def propose_cmd(_, msg: Message):
     if not msg.reply_to_message:
         await msg.reply(
-            f"💘 ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴘʀᴏᴘᴏsᴇ!\n"
+            f"{pe('heart','💘')} ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴘʀᴏᴘᴏsᴇ!\n"
             f"ᴜsᴀɢᴇ: ʀᴇᴘʟʏ ᴛᴏ sᴏᴍᴇᴏɴᴇ ᴀɴᴅ ᴛʏᴘᴇ /propose\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
@@ -31,12 +31,16 @@ async def propose_cmd(_, msg: Message):
     target   = msg.reply_to_message.from_user
 
     if target.is_bot:
-        await msg.reply(f"🤖 ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʀᴏᴘᴏsᴇ ᴛᴏ ᴀ ʙᴏᴛ!\n\n<i>{POWERED_BY}</i>",
-                        parse_mode=ParseMode.HTML)
+        await msg.reply(
+            f"🤖 ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʀᴏᴘᴏsᴇ ᴛᴏ ᴀ ʙᴏᴛ!\n\n<i>{POWERED_BY}</i>",
+            parse_mode=ParseMode.HTML
+        )
         return
     if proposer.id == target.id:
-        await msg.reply(f"💀 ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʀᴏᴘᴏsᴇ ᴛᴏ ʏᴏᴜʀsᴇʟғ!\n\n<i>{POWERED_BY}</i>",
-                        parse_mode=ParseMode.HTML)
+        await msg.reply(
+            f"{pe('skull','💀')} ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʀᴏᴘᴏsᴇ ᴛᴏ ʏᴏᴜʀsᴇʟғ!\n\n<i>{POWERED_BY}</i>",
+            parse_mode=ParseMode.HTML
+        )
         return
 
     await get_or_create_user(proposer.id, proposer.username or "", proposer.first_name or "")
@@ -64,7 +68,7 @@ async def propose_cmd(_, msg: Message):
     await msg.reply(
         f"💍 <b>{proposer.first_name}</b> ᴘʀᴏᴘᴏsᴇᴅ ᴛᴏ <b>{target.first_name}</b>!\n\n"
         f"💌 {target.mention}, ʀᴇᴘʟʏ ᴡɪᴛʜ /marry ᴛᴏ ᴀᴄᴄᴇᴘᴛ ᴀɴᴅ ɢᴇᴛ\n"
-        f"✨ <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ ᴄᴏɪɴ ᴛʀᴀɴsғᴇʀs!\n\n"
+        f"{pe('sparkle','✨')} <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ ᴄᴏɪɴ ᴛʀᴀɴsғᴇʀs!\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML
     )
@@ -82,7 +86,7 @@ async def marry_cmd(_, msg: Message):
         partner = rel["partner_id"]
         await msg.reply(
             f"💑 ʏᴏᴜ ᴀʀᴇ ᴍᴀʀʀɪᴇᴅ ᴛᴏ ᴜsᴇʀ <code>{partner}</code>!\n"
-            f"💸 ʏᴏᴜ ᴇɴᴊᴏʏ <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ /give.\n\n"
+            f"{pe('coins_fly','💸')} ʏᴏᴜ ᴇɴᴊᴏʏ <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ /give.\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
@@ -96,7 +100,7 @@ async def marry_cmd(_, msg: Message):
             await msg.reply(
                 f"🎊 ᴄᴏɴɢʀᴀᴛᴜʟᴀᴛɪᴏɴs! ʏᴏᴜ ᴀʀᴇ ɴᴏᴡ ᴍᴀʀʀɪᴇᴅ!\n"
                 f"💑 ᴜsᴇʀ <code>{partner_id}</code> & ʏᴏᴜ ᴀʀᴇ ᴀ ᴄᴏᴜᴘʟᴇ!\n"
-                f"✨ ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ /give!\n\n"
+                f"{pe('sparkle','✨')} ʏᴏᴜ ɴᴏᴡ ʜᴀᴠᴇ <b>5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ</b> ᴏɴ /give!\n\n"
                 f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
             )
             return
@@ -125,7 +129,7 @@ async def divorce_cmd(_, msg: Message):
     if user["coins"] < DIVORCE_COST:
         await msg.reply(
             f"❌ ᴅɪᴠᴏʀᴄᴇ ᴄᴏsᴛs <b>{DIVORCE_COST:,}</b> ᴄᴏɪɴs.\n"
-            f"🪙 ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
+            f"{pe('coin','🪙')} ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
@@ -137,7 +141,7 @@ async def divorce_cmd(_, msg: Message):
 
     await msg.reply(
         f"💔 ʏᴏᴜ ᴀʀᴇ ɴᴏᴡ ᴅɪᴠᴏʀᴄᴇᴅ.\n"
-        f"💸 <b>{DIVORCE_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ ᴀs ᴅɪᴠᴏʀᴄᴇ ғᴇᴇ.\n\n"
+        f"{pe('coins_fly','💸')} <b>{DIVORCE_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ ᴀs ᴅɪᴠᴏʀᴄᴇ ғᴇᴇ.\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
 
@@ -147,12 +151,12 @@ async def divorce_cmd(_, msg: Message):
 @app.on_message(filters.command("couple") & filters.group)
 async def couple_cmd(_, msg: Message):
     responses = [
-        "💘 ʏᴏᴜ ᴀʀᴇ 99% ᴄᴏᴍᴘᴀᴛɪʙʟᴇ! ᴘᴇʀғᴇᴄᴛ ᴍᴀᴛᴄʜ! 🥰",
-        "💝 ᴀʙsᴏʟᴜᴛᴇʟʏ ᴍᴀᴅᴇ ғᴏʀ ᴇᴀᴄʜ ᴏᴛʜᴇʀ! 💑",
-        "😏 ᴍᴀʏʙᴇ... ᴊᴜsᴛ ᴍᴀʏʙᴇ 45% ᴄᴏᴍᴘᴀᴛɪʙʟᴇ.",
-        "🤔 ʜᴍᴍ 60% — ᴛʜᴇʀᴇ's ᴘᴏᴛᴇɴᴛɪᴀʟ!",
-        "💀 0% — sᴛᴀʏ ᴀᴡᴀʏ ғʀᴏᴍ ᴇᴀᴄʜ ᴏᴛʜᴇʀ 😂",
-        "🔥 78% — ᴛᴏᴛᴀʟ ғɪʀᴇ ᴄᴏᴍʙᴏ!",
+        f"{pe('heart','💘')} ʏᴏᴜ ᴀʀᴇ 99% ᴄᴏᴍᴘᴀᴛɪʙʟᴇ! ᴘᴇʀғᴇᴄᴛ ᴍᴀᴛᴄʜ! 🥰",
+        f"💝 ᴀʙsᴏʟᴜᴛᴇʟʏ ᴍᴀᴅᴇ ғᴏʀ ᴇᴀᴄʜ ᴏᴛʜᴇʀ! 💑",
+        f"😏 ᴍᴀʏʙᴇ... ᴊᴜsᴛ ᴍᴀʏʙᴇ 45% ᴄᴏᴍᴘᴀᴛɪʙʟᴇ.",
+        f"🤔 ʜᴍᴍ 60% — ᴛʜᴇʀᴇ's ᴘᴏᴛᴇɴᴛɪᴀʟ!",
+        f"{pe('skull','💀')} 0% — sᴛᴀʏ ᴀᴡᴀʏ ғʀᴏᴍ ᴇᴀᴄʜ ᴏᴛʜᴇʀ 😂",
+        f"{pe('fire','🔥')} 78% — ᴛᴏᴛᴀʟ ғɪʀᴇ ᴄᴏᴍʙᴏ!",
     ]
 
     if msg.reply_to_message:
@@ -164,12 +168,12 @@ async def couple_cmd(_, msg: Message):
 
     result = random.choice(responses)
     pct    = random.randint(0, 100)
-    bar    = "❤️" * (pct // 10) + "🖤" * (10 - pct // 10)
+    bar    = pe('heart','❤️') * (pct // 10) + "🖤" * (10 - pct // 10)
 
     await msg.reply(
         f"💑 <b>ᴄᴏᴜᴘʟᴇ ᴍᴀᴛᴄʜᴍᴀᴋᴇʀ</b>\n\n"
         f"👤 {p1}  ×  {p2}\n\n"
-        f"❤️ ᴄᴏᴍᴘᴀᴛɪʙɪʟɪᴛʏ: <b>{pct}%</b>\n"
+        f"{pe('heart','❤️')} ᴄᴏᴍᴘᴀᴛɪʙɪʟɪᴛʏ: <b>{pct}%</b>\n"
         f"{bar}\n\n"
         f"{result}\n\n"
         f"<i>{POWERED_BY}</i>",

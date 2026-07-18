@@ -23,7 +23,7 @@ from database import (
     record_win, record_loss, get_bomb_leaderboard, get_user_rank
 )
 from utils.buttons import keyboard, primary_btn, success_btn, danger_btn, btn
-from config import POWERED_BY, BOMB_ROUND_TIMEOUT
+from config import POWERED_BY, BOMB_ROUND_TIMEOUT, pe
 
 
 bomb_games: dict[int, dict] = {}

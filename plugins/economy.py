@@ -17,7 +17,7 @@ from database import (
 from utils.buttons import keyboard, primary_btn, success_btn, danger_btn, btn, shop_keyboard
 from config import (
     POWERED_BY, DAILY_BASE, DAILY_COOLDOWN, CLAIM_AMOUNT, CLAIM_COOLDOWN,
-    TRANSFER_TAX, TRANSFER_TAX_MARRIED, SHOP_ITEMS
+    TRANSFER_TAX, TRANSFER_TAX_MARRIED, SHOP_ITEMS, pe
 )
 
 
@@ -34,17 +34,17 @@ async def bal_cmd(_, msg: Message):
     married = "💑 ᴍᴀʀʀɪᴇᴅ" if rel["status"] == "married" else "💔 sɪɴɢʟᴇ"
 
     await msg.reply(
-        f"👑 <b>ᴡᴀʟʟᴇᴛ — {name}</b>\n\n"
-        f"🪙 ᴄᴏɪɴs: <code>{user['coins']:,}</code>\n"
-        f"🏆 ᴡɪɴs: <code>{user['wins']}</code>\n"
+        f"{pe('crown','👑')} <b>ᴡᴀʟʟᴇᴛ — {name}</b>\n\n"
+        f"{pe('coin','🪙')} ᴄᴏɪɴs: <code>{user['coins']:,}</code>\n"
+        f"{pe('trophy','🏆')} ᴡɪɴs: <code>{user['wins']}</code>\n"
         f"💔 ʟᴏssᴇs: <code>{user['losses']}</code>\n"
-        f"🎮 ɢᴀᴍᴇs: <code>{user['games_played']}</code>\n"
-        f"💎 ʀᴀɴᴋ: <b>#{rank}</b>\n"
-        f"❤️ sᴛᴀᴛᴜs: {married}\n\n"
+        f"{pe('gamepad','🎮')} ɢᴀᴍᴇs: <code>{user['games_played']}</code>\n"
+        f"{pe('star','⭐')} ʀᴀɴᴋ: <b>#{rank}</b>\n"
+        f"{pe('heart','❤️')} sᴛᴀᴛᴜs: {married}\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard(
-            [primary_btn("🏆 ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", data="leaderboard")],
+            [primary_btn(f"{pe('trophy','🏆')} ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", data="leaderboard")],
             [btn("🔙 ʙᴀᴄᴋ", data="start")],
         )
     )
@@ -56,7 +56,7 @@ async def bal_cmd(_, msg: Message):
 async def give_cmd(_, msg: Message):
     if not msg.reply_to_message:
         await msg.reply(
-            f"💸 ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ + /give <amount>\n\n<i>{POWERED_BY}</i>",
+            f"{pe('coins_fly','💸')} ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ + /give &lt;amount&gt;\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
         return
@@ -71,7 +71,7 @@ async def give_cmd(_, msg: Message):
     args = msg.command
     if len(args) < 2:
         await msg.reply(
-            f"ᴜsᴀɢᴇ: /give <amount> (ʀᴇᴘʟʏ ᴛᴏ ᴛᴀʀɢᴇᴛ)\n\n<i>{POWERED_BY}</i>",
+            f"ᴜsᴀɢᴇ: /give &lt;amount&gt; (ʀᴇᴘʟʏ ᴛᴏ ᴛᴀʀɢᴇᴛ)\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
         return
@@ -89,12 +89,11 @@ async def give_cmd(_, msg: Message):
     if s_user["coins"] < amount:
         await msg.reply(
             f"❌ ɪɴsᴜғғɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ!\n"
-            f"🪙 ʏᴏᴜ ʜᴀᴠᴇ: <code>{s_user['coins']:,}</code>\n\n"
+            f"{pe('coin','🪙')} ʏᴏᴜ ʜᴀᴠᴇ: <code>{s_user['coins']:,}</code>\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
 
-    # Married = 5% tax, else 10%
     rel   = await get_relationship(sender.id)
     is_married = (rel["status"] == "married" and rel["partner_id"] == recvr.id)
     tax   = TRANSFER_TAX_MARRIED if is_married else TRANSFER_TAX
@@ -105,12 +104,12 @@ async def give_cmd(_, msg: Message):
     await update_coins(recvr.id,   net)
 
     await msg.reply(
-        f"💸 <b>ᴛʀᴀɴsғᴇʀ ᴄᴏᴍᴘʟᴇᴛᴇ!</b>\n\n"
+        f"{pe('coins_fly','💸')} <b>ᴛʀᴀɴsғᴇʀ ᴄᴏᴍᴘʟᴇᴛᴇ!</b>\n\n"
         f"👤 ғʀᴏᴍ: <b>{sender.first_name}</b>\n"
         f"👤 ᴛᴏ: <b>{recvr.first_name}</b>\n"
-        f"💰 ᴀᴍᴏᴜɴᴛ: <code>{amount:,}</code>\n"
-        f"💸 ᴛᴀx ({int(tax*100)}%): <code>{fee:,}</code>\n"
-        f"✅ ɴᴇᴛ ʀᴇᴄᴇɪᴠᴇᴅ: <code>{net:,}</code>\n\n"
+        f"{pe('money','💰')} ᴀᴍᴏᴜɴᴛ: <code>{amount:,}</code>\n"
+        f"{pe('coins_fly','💸')} ᴛᴀx ({int(tax*100)}%): <code>{fee:,}</code>\n"
+        f"{pe('checkmark','✅')} ɴᴇᴛ ʀᴇᴄᴇɪᴠᴇᴅ: <code>{net:,}</code>\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
 
@@ -140,8 +139,8 @@ async def claim_cmd(_, msg: Message):
     await set_group_claim(uid, chat_id)
 
     await msg.reply(
-        f"🎁 <b>ɢʀᴏᴜᴘ ʙᴏɴᴜs ᴄʟᴀɪᴍᴇᴅ!</b>\n\n"
-        f"💰 <code>+{CLAIM_AMOUNT:,}</code> ᴄᴏɪɴs ᴀᴅᴅᴇᴅ!\n"
+        f"{pe('gift','🎁')} <b>ɢʀᴏᴜᴘ ʙᴏɴᴜs ᴄʟᴀɪᴍᴇᴅ!</b>\n\n"
+        f"{pe('money','💰')} <code>+{CLAIM_AMOUNT:,}</code> ᴄᴏɪɴs ᴀᴅᴅᴇᴅ!\n"
         f"⏰ ɴᴇxᴛ ᴄʟᴀɪᴍ ɪɴ 24 ʜᴏᴜʀs.\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
@@ -163,28 +162,28 @@ async def daily_cmd(_, msg: Message):
         await msg.reply(
             f"⏳ ᴀʟʀᴇᴀᴅʏ ᴄʟᴀɪᴍᴇᴅ ᴛᴏᴅᴀʏ!\n"
             f"⏰ ᴄᴏᴍᴇ ʙᴀᴄᴋ ɪɴ <b>{left_h}h {left_m}m</b>.\n"
-            f"🔥 sᴛʀᴇᴀᴋ: <code>{d['streak']}</code> ᴅᴀʏs\n\n"
+            f"{pe('fire','🔥')} sᴛʀᴇᴀᴋ: <code>{d['streak']}</code> ᴅᴀʏs\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
 
-    # Streak: reset if >48h gap
     streak = (d["streak"] + 1) if elapsed < 172800 else 1
     reward = DAILY_BASE + (streak - 1) * 250
     if streak % 7 == 0:
-        reward += 1000  # weekly bonus
+        reward += 1000
 
     await update_coins(uid, reward)
     await set_daily(uid, streak)
 
-    streak_bar = "🔥" * min(streak, 7) + "⬜" * max(0, 7 - streak)
+    streak_bar = pe('fire','🔥') * min(streak, 7) + "⬜" * max(0, 7 - streak)
 
+    weekly_bonus = f"🎉 ᴡᴇᴇᴋʟʏ ʙᴏɴᴜs +1,000!\n" if streak % 7 == 0 else ""
     await msg.reply(
         f"📅 <b>ᴅᴀɪʟʏ ʀᴇᴡᴀʀᴅ ᴄʟᴀɪᴍᴇᴅ!</b>\n\n"
-        f"💰 ʀᴇᴡᴀʀᴅ: <code>+{reward:,}</code> ᴄᴏɪɴs\n"
-        f"🔥 sᴛʀᴇᴀᴋ: <code>{streak}</code> ᴅᴀʏs\n"
+        f"{pe('money','💰')} ʀᴇᴡᴀʀᴅ: <code>+{reward:,}</code> ᴄᴏɪɴs\n"
+        f"{pe('fire','🔥')} sᴛʀᴇᴀᴋ: <code>{streak}</code> ᴅᴀʏs\n"
         f"{streak_bar}\n"
-        + (f"🎉 ᴡᴇᴇᴋʟʏ ʙᴏɴᴜs +1,000!\n" if streak % 7 == 0 else "") +
+        f"{weekly_bonus}"
         f"\n<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
 
@@ -198,7 +197,7 @@ async def shop_cmd(_, msg: Message):
         lines.append(f"{item['name']} — <code>{item['price']:,}</code> ᴄᴏɪɴs\n  ↳ {item['desc']}")
 
     await msg.reply(
-        f"🛒 <b>ᴍᴀᴅᴀʀᴀ sʜᴏᴘ</b>\n\n" +
+        f"{pe('coin','🪙')} <b>ᴍᴀᴅᴀʀᴀ sʜᴏᴘ</b>\n\n" +
         "\n\n".join(lines) +
         f"\n\n<i>ᴛᴀᴘ ᴀ ʙᴜᴛᴛᴏɴ ᴛᴏ ʙᴜʏ:</i>\n\n{POWERED_BY}",
         parse_mode=ParseMode.HTML,

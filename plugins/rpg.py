@@ -15,7 +15,7 @@ from database import (
 )
 from config import (
     POWERED_BY, KILL_COOLDOWN, KILL_SUCCESS_RATE,
-    KILL_LOOT_MIN, KILL_LOOT_MAX, PROTECT_COST, REVIVE_COST
+    KILL_LOOT_MIN, KILL_LOOT_MAX, PROTECT_COST, REVIVE_COST, pe
 )
 
 
@@ -25,7 +25,7 @@ from config import (
 async def kill_cmd(_, msg: Message):
     if not msg.reply_to_message:
         await msg.reply(
-            f"⚔️ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴀᴛᴛᴀᴄᴋ!\n\n<i>{POWERED_BY}</i>",
+            f"{pe('knife','⚔️')} ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ ᴛᴏ ᴀᴛᴛᴀᴄᴋ!\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
         return
@@ -64,15 +64,13 @@ async def kill_cmd(_, msg: Message):
 
     await update_combat(attacker.id, last_kill=now)
 
-    # Sword bonus
     has_sword = await has_item(attacker.id, "sword")
     loot_max  = KILL_LOOT_MAX + (0.20 if has_sword else 0)
 
     if random.random() < KILL_SUCCESS_RATE:
-        v_bal   = await get_balance(victim.id)
+        v_bal    = await get_balance(victim.id)
         loot_pct = random.uniform(KILL_LOOT_MIN, loot_max)
-        loot     = int(v_bal * loot_pct)
-        loot     = max(loot, 50)
+        loot     = max(int(v_bal * loot_pct), 50)
 
         await update_coins(victim.id,   -loot)
         await update_coins(attacker.id,  loot)
@@ -81,9 +79,9 @@ async def kill_cmd(_, msg: Message):
         await update_combat(victim.id, deaths=c_v["deaths"] + 1)
 
         await msg.reply(
-            f"💀 <b>{attacker.first_name}</b> ᴋɪʟʟᴇᴅ <b>{victim.first_name}</b>!\n\n"
-            f"💰 ʟᴏᴏᴛᴇᴅ: <code>{loot:,}</code> ᴄᴏɪɴs ({int(loot_pct*100)}%)\n"
-            f"🗡️ ᴋɪʟʟs: {c_att['kills']+1}\n\n"
+            f"{pe('skull','💀')} <b>{attacker.first_name}</b> ᴋɪʟʟᴇᴅ <b>{victim.first_name}</b>!\n\n"
+            f"{pe('money','💰')} ʟᴏᴏᴛᴇᴅ: <code>{loot:,}</code> ᴄᴏɪɴs ({int(loot_pct*100)}%)\n"
+            f"{pe('knife','🗡️')} ᴋɪʟʟs: {c_att['kills']+1}\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
     else:
@@ -99,7 +97,7 @@ async def kill_cmd(_, msg: Message):
 async def rob_cmd(_, msg: Message):
     if not msg.reply_to_message:
         await msg.reply(
-            f"🔪 ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ + /rob <amount>\n\n<i>{POWERED_BY}</i>",
+            f"{pe('knife','🔪')} ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴜsᴇʀ + /rob &lt;amount&gt;\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
         return
@@ -114,7 +112,7 @@ async def rob_cmd(_, msg: Message):
     args = msg.command
     if len(args) < 2:
         await msg.reply(
-            f"ᴜsᴀɢᴇ: /rob <amount> (ʀᴇᴘʟʏ ᴛᴏ ᴛᴀʀɢᴇᴛ)\n\n<i>{POWERED_BY}</i>",
+            f"ᴜsᴀɢᴇ: /rob &lt;amount&gt; (ʀᴇᴘʟʏ ᴛᴏ ᴛᴀʀɢᴇᴛ)\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
         return
@@ -126,13 +124,14 @@ async def rob_cmd(_, msg: Message):
         await msg.reply(f"❌ ɪɴᴠᴀʟɪᴅ ᴀᴍᴏᴜɴᴛ!\n\n<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML)
         return
 
-    # Requires weapon
-    has_weapon = await has_item(robber.id, "knife") or \
-                 await has_item(robber.id, "gun")   or \
-                 await has_item(robber.id, "sword")
+    has_weapon = (
+        await has_item(robber.id, "knife") or
+        await has_item(robber.id, "gun")   or
+        await has_item(robber.id, "sword")
+    )
     if not has_weapon:
         await msg.reply(
-            f"🔪 ʏᴏᴜ ɴᴇᴇᴅ ᴀ ᴡᴇᴀᴘᴏɴ ᴛᴏ ʀᴏʙ!\n"
+            f"{pe('knife','🔪')} ʏᴏᴜ ɴᴇᴇᴅ ᴀ ᴡᴇᴀᴘᴏɴ ᴛᴏ ʀᴏʙ!\n"
             f"ʙᴜʏ ᴏɴᴇ ғʀᴏᴍ /shop\n\n<i>{POWERED_BY}</i>",
             parse_mode=ParseMode.HTML
         )
@@ -161,7 +160,7 @@ async def rob_cmd(_, msg: Message):
 
     await msg.reply(
         f"🔫 <b>{robber.first_name}</b> ʀᴏʙʙᴇᴅ <b>{victim.first_name}</b>!\n\n"
-        f"💰 sᴛᴏʟᴇ: <code>{amount:,}</code> ᴄᴏɪɴs\n\n"
+        f"{pe('money','💰')} sᴛᴏʟᴇ: <code>{amount:,}</code> ᴄᴏɪɴs\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
 
@@ -176,7 +175,7 @@ async def protect_cmd(_, msg: Message):
     if user["coins"] < PROTECT_COST:
         await msg.reply(
             f"❌ ɴᴇᴇᴅ <b>{PROTECT_COST:,}</b> ᴄᴏɪɴs ғᴏʀ 24ʜ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ.\n"
-            f"🪙 ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
+            f"{pe('coin','🪙')} ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
@@ -193,7 +192,7 @@ async def protect_cmd(_, msg: Message):
 
     await msg.reply(
         f"🛡️ <b>24ʜ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ ᴀᴄᴛɪᴠᴀᴛᴇᴅ!</b>\n\n"
-        f"💸 <b>{PROTECT_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ.\n"
+        f"{pe('coins_fly','💸')} <b>{PROTECT_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ.\n"
         f"🛡️ ɴᴏ ᴏɴᴇ ᴄᴀɴ /kill ᴏʀ /rob ʏᴏᴜ ғᴏʀ 24 ʜᴏᴜʀs!\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
@@ -209,7 +208,7 @@ async def revive_cmd(_, msg: Message):
     if user["coins"] < REVIVE_COST:
         await msg.reply(
             f"❌ ʀᴇᴠɪᴠᴀʟ ᴄᴏsᴛs <b>{REVIVE_COST:,}</b> ᴄᴏɪɴs.\n"
-            f"🪙 ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
+            f"{pe('coin','🪙')} ʙᴀʟᴀɴᴄᴇ: <code>{user['coins']:,}</code>\n\n"
             f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
         )
         return
@@ -218,8 +217,8 @@ async def revive_cmd(_, msg: Message):
     await update_combat(uid, deaths=0)
 
     await msg.reply(
-        f"✨ <b>ʀᴇᴠɪᴠᴇᴅ!</b> ʏᴏᴜ ᴀʀᴇ ʙᴀᴄᴋ ɪɴ ᴀᴄᴛɪᴏɴ!\n"
-        f"💸 <b>{REVIVE_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ.\n\n"
+        f"{pe('sparkle','✨')} <b>ʀᴇᴠɪᴠᴇᴅ!</b> ʏᴏᴜ ᴀʀᴇ ʙᴀᴄᴋ ɪɴ ᴀᴄᴛɪᴏɴ!\n"
+        f"{pe('coins_fly','💸')} <b>{REVIVE_COST:,}</b> ᴄᴏɪɴs ᴅᴇᴅᴜᴄᴛᴇᴅ.\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )
 
@@ -234,11 +233,13 @@ async def status_cmd(_, msg: Message):
     c    = await get_combat(uid)
     prot = c["protection_until"] > time.time()
     prot_left = int(max(0, c["protection_until"] - time.time()) // 60)
+    prot_str = (f"{pe('checkmark','✅')} ᴀᴄᴛɪᴠᴇ ({prot_left}m ʟᴇғᴛ)"
+                if prot else "❌ ɴᴏɴᴇ")
 
     await msg.reply(
-        f"⚔️ <b>ᴄᴏᴍʙᴀᴛ sᴛᴀᴛᴜs — {name}</b>\n\n"
-        f"🗡️ ᴋɪʟʟs: <code>{c['kills']}</code>\n"
-        f"💀 ᴅᴇᴀᴛʜs: <code>{c['deaths']}</code>\n"
-        f"🛡️ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ: {'✅ ᴀᴄᴛɪᴠᴇ (' + str(prot_left) + 'm ʟᴇғᴛ)' if prot else '❌ ɴᴏɴᴇ'}\n\n"
+        f"{pe('knife','⚔️')} <b>ᴄᴏᴍʙᴀᴛ sᴛᴀᴛᴜs — {name}</b>\n\n"
+        f"{pe('knife','🗡️')} ᴋɪʟʟs: <code>{c['kills']}</code>\n"
+        f"{pe('skull','💀')} ᴅᴇᴀᴛʜs: <code>{c['deaths']}</code>\n"
+        f"🛡️ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ: {prot_str}\n\n"
         f"<i>{POWERED_BY}</i>", parse_mode=ParseMode.HTML
     )

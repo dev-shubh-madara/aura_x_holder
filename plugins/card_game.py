@@ -23,7 +23,7 @@ from database import (
     get_or_create_user, get_balance, update_coins, record_win, record_loss
 )
 from utils.buttons import keyboard, primary_btn, success_btn, danger_btn, btn, flip_keyboard
-from config import POWERED_BY, CARD_TURN_TIMEOUT
+from config import POWERED_BY, CARD_TURN_TIMEOUT, pe
 
 
 # ── Active games: chat_id → game state dict ─────────────────────────────────

@@ -72,10 +72,10 @@ async def start_group(_, msg: Message):
         msg.from_user.first_name or ""
     )
     text = (
-        f"🔥 <b>{BOT_NAME} ɪs ʜᴇʀᴇ!</b>\n\n"
-        f"🎮 /card  💣 /bomb  🔐 /hack\n"
-        f"💰 /daily  🎁 /claim  ⚔️ /kill\n"
-        f"💘 /propose  🛒 /shop  📊 /ping\n\n"
+        f"{pe('fire','🔥')} <b>{BOT_NAME} ɪs ʜᴇʀᴇ!</b>\n\n"
+        f"{pe('gamepad','🎮')} /card  {pe('bomb','💣')} /bomb  {pe('lock','🔐')} /hack\n"
+        f"{pe('coin','💰')} /daily  {pe('gift','🎁')} /claim  {pe('knife','⚔️')} /kill\n"
+        f"{pe('heart','💘')} /propose  {pe('coin','🪙')} /shop  {pe('zap','📊')} /ping\n\n"
         f"ᴛʏᴘᴇ /help ғᴏʀ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs!\n\n"
         f"<i>{POWERED_BY}</i>"
     )
@@ -89,14 +89,14 @@ async def start_group(_, msg: Message):
 @app.on_message(filters.command("help"))
 async def help_cmd(_, msg: Message):
     await msg.reply(
-        f"📖 <b>{BOT_NAME} — ʜᴇʟᴘ ᴄᴇɴᴛʀᴇ</b>\n"
+        f"{pe('notepad','📖')} <b>{BOT_NAME} — ʜᴇʟᴘ ᴄᴇɴᴛʀᴇ</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
         f"ᴄʜᴏᴏsᴇ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ sᴇᴇ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs:\n\n"
-        f"🎮 <b>ɢᴀᴍᴇs</b> — ᴄᴀʀᴅ, ʙᴏᴍʙ, ʜᴀᴄᴋ\n"
-        f"💰 <b>ᴇᴄᴏɴᴏᴍʏ</b> — ᴅᴀɪʟʏ, sʜᴏᴘ, ᴛʀᴀᴅᴇ\n"
-        f"💘 <b>sᴏᴄɪᴀʟ</b> — ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ, ᴄᴏᴜᴘʟᴇ\n"
-        f"⚔️ <b>ʀᴘɢ & ᴄᴏᴍʙᴀᴛ</b> — ᴋɪʟʟ, ʀᴏʙ, ᴘʀᴏᴛᴇᴄᴛ\n"
-        f"⛩️ <b>ɢʀᴏᴜᴘ ᴍɢᴍᴛ</b> — ʙᴀɴ, ᴍᴜᴛᴇ, ᴡᴇʟᴄᴏᴍᴇ\n\n"
+        f"{pe('gamepad','🎮')} <b>ɢᴀᴍᴇs</b> — ᴄᴀʀᴅ, ʙᴏᴍʙ, ʜᴀᴄᴋ\n"
+        f"{pe('coin','💰')} <b>ᴇᴄᴏɴᴏᴍʏ</b> — ᴅᴀɪʟʏ, sʜᴏᴘ, ᴛʀᴀᴅᴇ\n"
+        f"{pe('heart','💘')} <b>sᴏᴄɪᴀʟ</b> — ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ, ᴄᴏᴜᴘʟᴇ\n"
+        f"{pe('knife','⚔️')} <b>ʀᴘɢ & ᴄᴏᴍʙᴀᴛ</b> — ᴋɪʟʟ, ʀᴏʙ, ᴘʀᴏᴛᴇᴄᴛ\n"
+        f"{pe('settings','⛩️')} <b>ɢʀᴏᴜᴘ ᴍɢᴍᴛ</b> — ʙᴀɴ, ᴍᴜᴛᴇ, ᴡᴇʟᴄᴏᴍᴇ\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=help_menu_keyboard()
@@ -108,14 +108,14 @@ async def help_cmd(_, msg: Message):
 @app.on_callback_query(filters.regex("^help_menu$"))
 async def cb_help_menu(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"📖 <b>{BOT_NAME} — ʜᴇʟᴘ ᴄᴇɴᴛʀᴇ</b>\n"
+        f"{pe('notepad','📖')} <b>{BOT_NAME} — ʜᴇʟᴘ ᴄᴇɴᴛʀᴇ</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
         f"ᴄʜᴏᴏsᴇ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ sᴇᴇ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs:\n\n"
-        f"🎮 ɢᴀᴍᴇs — ᴄᴀʀᴅ, ʙᴏᴍʙ, ʜᴀᴄᴋ\n"
-        f"💰 ᴇᴄᴏɴᴏᴍʏ — ᴅᴀɪʟʏ, sʜᴏᴘ, ᴛʀᴀᴅᴇ\n"
-        f"💘 sᴏᴄɪᴀʟ — ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ, ᴄᴏᴜᴘʟᴇ\n"
-        f"⚔️ ʀᴘɢ — ᴋɪʟʟ, ʀᴏʙ, ᴘʀᴏᴛᴇᴄᴛ\n"
-        f"⛩️ ɢʀᴏᴜᴘ — ʙᴀɴ, ᴍᴜᴛᴇ, ᴡᴇʟᴄᴏᴍᴇ\n\n"
+        f"{pe('gamepad','🎮')} ɢᴀᴍᴇs — ᴄᴀʀᴅ, ʙᴏᴍʙ, ʜᴀᴄᴋ\n"
+        f"{pe('coin','💰')} ᴇᴄᴏɴᴏᴍʏ — ᴅᴀɪʟʏ, sʜᴏᴘ, ᴛʀᴀᴅᴇ\n"
+        f"{pe('heart','💘')} sᴏᴄɪᴀʟ — ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ, ᴄᴏᴜᴘʟᴇ\n"
+        f"{pe('knife','⚔️')} ʀᴘɢ — ᴋɪʟʟ, ʀᴏʙ, ᴘʀᴏᴛᴇᴄᴛ\n"
+        f"{pe('settings','⛩️')} ɢʀᴏᴜᴘ — ʙᴀɴ, ᴍᴜᴛᴇ, ᴡᴇʟᴄᴏᴍᴇ\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=help_menu_keyboard()
@@ -125,27 +125,27 @@ async def cb_help_menu(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^help_games$"))
 async def cb_help_games(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"🎮 <b>ɢᴀᴍᴇs ᴄᴏᴍᴍᴀɴᴅs</b>\n"
+        f"{pe('gamepad','🎮')} <b>ɢᴀᴍᴇs ᴄᴏᴍᴍᴀɴᴅs</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
-        f"🃏 /card — sᴛᴀʀᴛ ᴄᴀʀᴅ ғʟɪᴘ ɢᴀᴍᴇ\n"
+        f"{pe('card','🃏')} /card — sᴛᴀʀᴛ ᴄᴀʀᴅ ғʟɪᴘ ɢᴀᴍᴇ\n"
         f"   ↳ /bet &lt;ᴀᴍᴏᴜɴᴛ&gt; — ᴊᴏɪɴ ɢᴀᴍᴇ\n"
         f"   ↳ /flip a/b/c/d — ᴘʟᴀʏ ʏᴏᴜʀ ᴄᴀʀᴅ\n\n"
-        f"💣 /bomb &lt;ᴀᴍᴏᴜɴᴛ&gt; — sᴛᴀʀᴛ ʙᴏᴍʙ ɢᴀᴍᴇ\n"
+        f"{pe('bomb','💣')} /bomb &lt;ᴀᴍᴏᴜɴᴛ&gt; — sᴛᴀʀᴛ ʙᴏᴍʙ ɢᴀᴍᴇ\n"
         f"   ↳ /join &lt;ᴀᴍᴏᴜɴᴛ&gt; — ᴊᴏɪɴ\n"
         f"   ↳ /pass — ᴘᴀss ᴛʜᴇ ʙᴏᴍʙ\n"
         f"   ↳ /bombcancel — ᴄᴀɴᴄᴇʟ (ᴀᴅᴍɪɴ)\n\n"
-        f"🔐 /hack &lt;ʀᴇᴡᴀʀᴅ&gt; &lt;ᴅɪɢɪᴛs&gt; — ʜᴏsᴛ ʜᴀᴄᴋ\n"
+        f"{pe('lock','🔐')} /hack &lt;ʀᴇᴡᴀʀᴅ&gt; &lt;ᴅɪɢɪᴛs&gt; — ʜᴏsᴛ ʜᴀᴄᴋ\n"
         f"   ↳ /register &lt;ᴀᴍᴏᴜɴᴛ&gt; — ᴊᴏɪɴ\n"
         f"   ↳ /guess &lt;ɴᴜᴍʙᴇʀ&gt; — ɢᴜᴇss\n"
         f"   ↳ /end — ᴇɴᴅ ɢᴀᴍᴇ (ʜᴏsᴛ)\n\n"
-        f"🏆 /rank — ʏᴏᴜʀ ʀᴀɴᴋ\n"
-        f"📊 /leaders — ʙᴏᴍʙ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ\n\n"
+        f"{pe('trophy','🏆')} /rank — ʏᴏᴜʀ ʀᴀɴᴋ\n"
+        f"{pe('star','📊')} /leaders — ʙᴏᴍʙ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard(
-            [primary_btn("🃏 ᴄᴀʀᴅ ɪɴғᴏ", data="info_card"),
-             danger_btn("💣 ʙᴏᴍʙ ɪɴғᴏ",   data="info_bomb")],
-            [success_btn("🔐 ʜᴀᴄᴋ ɪɴғᴏ",  data="info_hack")],
+            [primary_btn(f"{pe('card','🃏')} ᴄᴀʀᴅ ɪɴғᴏ", data="info_card"),
+             danger_btn(f"{pe('bomb','💣')} ʙᴏᴍʙ ɪɴғᴏ",   data="info_bomb")],
+            [success_btn(f"{pe('lock','🔐')} ʜᴀᴄᴋ ɪɴғᴏ",  data="info_hack")],
             [btn("🔙 ʙᴀᴄᴋ", data="help_menu")],
         )
     )
@@ -154,18 +154,18 @@ async def cb_help_games(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^help_economy$"))
 async def cb_help_economy(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"💰 <b>ᴇᴄᴏɴᴏᴍʏ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
+        f"{pe('coin','💰')} <b>ᴇᴄᴏɴᴏᴍʏ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
-        f"🪙 /bal [@ᴜsᴇʀ] — ᴄʜᴇᴄᴋ ʙᴀʟᴀɴᴄᴇ\n"
+        f"{pe('coin','🪙')} /bal [@ᴜsᴇʀ] — ᴄʜᴇᴄᴋ ʙᴀʟᴀɴᴄᴇ\n"
         f"📅 /daily — ᴄʟᴀɪᴍ ᴅᴀɪʟʏ sᴛʀᴇᴀᴋ ʀᴇᴡᴀʀᴅ\n"
         f"   ↳ sᴛʀᴇᴀᴋ ʙᴏɴᴜs ɪɴᴄʀᴇᴀsᴇs ᴇᴀᴄʜ ᴅᴀʏ!\n\n"
-        f"🎁 /claim — ɢʀᴏᴜᴘ ʙᴏɴᴜs 2,000 ᴄᴏɪɴs\n"
+        f"{pe('gift','🎁')} /claim — ɢʀᴏᴜᴘ ʙᴏɴᴜs 2,000 ᴄᴏɪɴs\n"
         f"   ↳ ᴄᴏᴏʟᴅᴏᴡɴ: 24 ʜᴏᴜʀs ᴘᴇʀ ɢʀᴏᴜᴘ\n\n"
-        f"💸 /give &lt;ᴀᴍᴏᴜɴᴛ&gt; — ᴛʀᴀɴsғᴇʀ ᴄᴏɪɴs\n"
+        f"{pe('coins_fly','💸')} /give &lt;ᴀᴍᴏᴜɴᴛ&gt; — ᴛʀᴀɴsғᴇʀ ᴄᴏɪɴs\n"
         f"   ↳ ᴛᴀx: 10% (5% ɪғ ᴍᴀʀʀɪᴇᴅ ᴛᴏ ᴛᴀʀɢᴇᴛ)\n\n"
         f"🛒 /shop — ʙʀᴏᴡsᴇ ᴡᴇᴀᴘᴏɴs &amp; ᴀʀᴍᴏʀ\n"
         f"🎒 /inventory — ᴠɪᴇᴡ ʏᴏᴜʀ ɪᴛᴇᴍs\n"
-        f"🏆 /top — ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ\n\n"
+        f"{pe('trophy','🏆')} /top — ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard(
@@ -178,7 +178,7 @@ async def cb_help_economy(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^help_social$"))
 async def cb_help_social(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"💘 <b>sᴏᴄɪᴀʟ & ʀᴏᴍᴀɴᴄᴇ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
+        f"{pe('heart','💘')} <b>sᴏᴄɪᴀʟ & ʀᴏᴍᴀɴᴄᴇ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
         f"💍 /propose — ʀᴇᴘʟʏ ᴛᴏ ᴘʀᴏᴘᴏsᴇ ᴍᴀʀʀɪᴀɢᴇ\n"
         f"   ↳ ʙᴇɴᴇғɪᴛ: 5% ᴛᴀx ʀᴇᴅᴜᴄᴛɪᴏɴ ᴏɴ /give\n\n"
@@ -195,16 +195,16 @@ async def cb_help_social(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^help_combat$"))
 async def cb_help_combat(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"⚔️ <b>ʀᴘɢ & ᴄᴏᴍʙᴀᴛ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
+        f"{pe('knife','⚔️')} <b>ʀᴘɢ & ᴄᴏᴍʙᴀᴛ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
-        f"💀 /kill — ʀᴇᴘʟʏ ᴛᴏ ᴀᴛᴛᴀᴄᴋ ᴀ ᴘʟᴀʏᴇʀ\n"
+        f"{pe('skull','💀')} /kill — ʀᴇᴘʟʏ ᴛᴏ ᴀᴛᴛᴀᴄᴋ ᴀ ᴘʟᴀʏᴇʀ\n"
         f"   ↳ 50% sᴜᴄᴄᴇss | ʟᴏᴏᴛ 20-40% ʙᴀʟᴀɴᴄᴇ\n"
         f"   ↳ ᴄᴏᴏʟᴅᴏᴡɴ: 1 ʜᴏᴜʀ\n\n"
-        f"🔪 /rob &lt;ᴀᴍᴏᴜɴᴛ&gt; — sᴛᴇᴀʟ ᴄᴏɪɴs\n"
+        f"{pe('knife','🔪')} /rob &lt;ᴀᴍᴏᴜɴᴛ&gt; — sᴛᴇᴀʟ ᴄᴏɪɴs\n"
         f"   ↳ ʀᴇQᴜɪʀᴇs ᴡᴇᴀᴘᴏɴ ғʀᴏᴍ /shop\n\n"
         f"🛡️ /protect 1d — 24ʜ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ sʜɪᴇʟᴅ\n"
         f"   ↳ ᴄᴏsᴛ: 1,000 ᴄᴏɪɴs\n\n"
-        f"✨ /revive — ɪɴsᴛᴀɴᴛ ʀᴇᴠɪᴠᴀʟ\n"
+        f"{pe('sparkle','✨')} /revive — ɪɴsᴛᴀɴᴛ ʀᴇᴠɪᴠᴀʟ\n"
         f"   ↳ ᴄᴏsᴛ: 500 ᴄᴏɪɴs\n\n"
         f"📊 /status — ᴠɪᴇᴡ ʏᴏᴜʀ ᴄᴏᴍʙᴀᴛ sᴛᴀᴛs\n\n"
         f"<i>{POWERED_BY}</i>",
@@ -216,28 +216,18 @@ async def cb_help_combat(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^help_group$"))
 async def cb_help_group(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"⛩️ <b>ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
+        f"{pe('settings','⛩️')} <b>ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴄᴏᴍᴍᴀɴᴅs</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
-        f"🏓 /ping — ᴄʜᴇᴄᴋ ʙᴏᴛ ʟᴀᴛᴇɴᴄʏ & sᴛᴀᴛᴜs\n"
+        f"{pe('zap','🏓')} /ping — ᴄʜᴇᴄᴋ ʙᴏᴛ ʟᴀᴛᴇɴᴄʏ & sᴛᴀᴛᴜs\n"
         f"📊 /stats — ɢʀᴏᴜᴘ sᴛᴀᴛɪsᴛɪᴄs\n"
         f"👮 /staff — ʟɪsᴛ ᴀᴅᴍɪɴs\n"
         f"🤖 /bots — ʟɪsᴛ ʙᴏᴛs\n\n"
         f"<b>ᴀᴅᴍɪɴ ᴏɴʟʏ:</b>\n"
         f"👋 /welcome on/off — ᴡᴇʟᴄᴏᴍᴇ ᴍᴇssᴀɢᴇs\n"
-        f"📌 /pin — ᴘɪɴ ᴍᴇssᴀɢᴇ (ʀᴇᴘʟʏ)\n"
-        f"📌 /pinned — sʜᴏᴡ ᴘɪɴɴᴇᴅ ᴍsɢ\n"
-        f"📌 /unpin — ᴜɴᴘɪɴ ᴍᴇssᴀɢᴇ\n"
-        f"🚫 /ban — ʙᴀɴ ᴜsᴇʀ\n"
-        f"✅ /unban — ᴜɴʙᴀɴ ᴜsᴇʀ\n"
-        f"👢 /kick — ᴋɪᴄᴋ ᴜsᴇʀ\n"
-        f"🔇 /mute — ᴍᴜᴛᴇ ᴜsᴇʀ\n"
-        f"🔊 /unmute — ᴜɴᴍᴜᴛᴇ ᴜsᴇʀ\n"
-        f"✏️ /settitle &lt;ɴᴀᴍᴇ&gt; — sᴇᴛ ᴛɪᴛʟᴇ\n"
-        f"📝 /setdesc &lt;ᴛᴇxᴛ&gt; — sᴇᴛ ᴅᴇsᴄ\n"
-        f"🖼 /setphoto — sᴇᴛ ᴘʜᴏᴛᴏ (ʀᴇᴘʟʏ)\n"
-        f"🗑 /removephoto — ᴄʟᴇᴀʀ ᴘʜᴏᴛᴏ\n"
-        f"🧟 /zombies — ᴋɪᴄᴋ ᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄs\n"
-        f"🕵️ /imposter on/off — ᴜsᴇʀɴᴀᴍᴇ ᴡᴀᴛᴄʜᴇʀ\n\n"
+        f"{pe('pin','📌')} /pin — ᴘɪɴ ᴍᴇssᴀɢᴇ (ʀᴇᴘʟʏ)\n"
+        f"🚫 /ban — ʙᴀɴ ᴜsᴇʀ  {pe('checkmark','✅')} /unban — ᴜɴʙᴀɴ\n"
+        f"🔇 /mute — ᴍᴜᴛᴇ  🔊 /unmute — ᴜɴᴍᴜᴛᴇ\n"
+        f"{pe('trash','🗑')} /zombies — ᴋɪᴄᴋ ᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄs\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=help_back_keyboard()
@@ -257,9 +247,9 @@ async def cb_start(_, cq: CallbackQuery):
     )
     name = cq.from_user.first_name or "ᴘʟᴀʏᴇʀ"
     await cq.edit_message_text(
-        f"👑 <b>ᴡᴇʟᴄᴏᴍᴇ ʙᴀᴄᴋ, {name}!</b>\n\n"
-        f"🔥 <b>{BOT_NAME}</b>\n\n"
-        f"🪙 <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code> ᴄᴏɪɴs\n\n"
+        f"{pe('crown','👑')} <b>ᴡᴇʟᴄᴏᴍᴇ ʙᴀᴄᴋ, {name}!</b>\n\n"
+        f"{pe('fire','🔥')} <b>{BOT_NAME}</b>\n\n"
+        f"{pe('coin','🪙')} <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code> ᴄᴏɪɴs\n\n"
         f"<i>{POWERED_BY} | {VERSION}</i>",
         reply_markup=start_keyboard(), parse_mode=ParseMode.HTML
     )
@@ -268,10 +258,10 @@ async def cb_start(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^games_menu$"))
 async def cb_games(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"⚔️ <b>ᴄʜᴏᴏsᴇ ʏᴏᴜʀ ɢᴀᴍᴇ</b>\n\n"
-        f"🃏 <b>ᴄᴀʀᴅ ɢᴀᴍᴇ</b> — ғʟɪᴘ ᴄᴀʀᴅs, ʜɪɢʜᴇsᴛ ᴡɪɴs\n"
-        f"💣 <b>ʙᴏᴍʙ ɢᴀᴍᴇ</b> — ᴘᴀss ᴛʜᴇ ʙᴏᴍʙ, ʟᴀsᴛ ᴀʟɪᴠᴇ ᴡɪɴs\n"
-        f"🔐 <b>ʜᴀᴄᴋ ɢᴀᴍᴇ</b> — ɢᴜᴇss ᴛʜᴇ sᴇᴄʀᴇᴛ ᴘᴀssᴡᴏʀᴅ\n\n"
+        f"{pe('knife','⚔️')} <b>ᴄʜᴏᴏsᴇ ʏᴏᴜʀ ɢᴀᴍᴇ</b>\n\n"
+        f"{pe('card','🃏')} <b>ᴄᴀʀᴅ ɢᴀᴍᴇ</b> — ғʟɪᴘ ᴄᴀʀᴅs, ʜɪɢʜᴇsᴛ ᴡɪɴs\n"
+        f"{pe('bomb','💣')} <b>ʙᴏᴍʙ ɢᴀᴍᴇ</b> — ᴘᴀss ᴛʜᴇ ʙᴏᴍʙ, ʟᴀsᴛ ᴀʟɪᴠᴇ ᴡɪɴs\n"
+        f"{pe('lock','🔐')} <b>ʜᴀᴄᴋ ɢᴀᴍᴇ</b> — ɢᴜᴇss ᴛʜᴇ sᴇᴄʀᴇᴛ ᴘᴀssᴡᴏʀᴅ\n\n"
         f"<i>{POWERED_BY}</i>",
         reply_markup=games_keyboard(), parse_mode=ParseMode.HTML
     )
@@ -285,16 +275,16 @@ async def cb_wallet(_, cq: CallbackQuery):
     rank = await get_user_rank(cq.from_user.id)
     name = cq.from_user.first_name or "ᴘʟᴀʏᴇʀ"
     await cq.edit_message_text(
-        f"👑 <b>ᴡᴀʟʟᴇᴛ — {name}</b>\n\n"
-        f"🪙 ᴄᴏɪɴs: <code>{user['coins']:,}</code>\n"
-        f"🏆 ᴡɪɴs: <code>{user['wins']}</code>\n"
+        f"{pe('crown','👑')} <b>ᴡᴀʟʟᴇᴛ — {name}</b>\n\n"
+        f"{pe('coin','🪙')} ᴄᴏɪɴs: <code>{user['coins']:,}</code>\n"
+        f"{pe('trophy','🏆')} ᴡɪɴs: <code>{user['wins']}</code>\n"
         f"💔 ʟᴏssᴇs: <code>{user['losses']}</code>\n"
-        f"🎮 ɢᴀᴍᴇs: <code>{user['games_played']}</code>\n"
-        f"💎 ʀᴀɴᴋ: #{rank}\n\n"
+        f"{pe('gamepad','🎮')} ɢᴀᴍᴇs: <code>{user['games_played']}</code>\n"
+        f"{pe('star','⭐')} ʀᴀɴᴋ: #{rank}\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard(
-            [primary_btn("🏆 ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", data="leaderboard")],
+            [primary_btn(f"{pe('trophy','🏆')} ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", data="leaderboard")],
             [btn("🔙 ʙᴀᴄᴋ", data="start")],
         )
     )
@@ -309,7 +299,8 @@ async def cb_leaderboard(_, cq: CallbackQuery):
         for i, u in enumerate(users)
     ]
     await cq.edit_message_text(
-        f"🏆 <b>ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ</b>\n\n" + "\n".join(lines) + f"\n\n<i>{POWERED_BY}</i>",
+        f"{pe('trophy','🏆')} <b>ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ</b>\n\n" + "\n".join(lines) +
+        f"\n\n<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard([btn("🔙 ʙᴀᴄᴋ", data="start")])
     )
@@ -324,7 +315,7 @@ async def cb_open_shop(_, cq: CallbackQuery):
         for it in SHOP_ITEMS.values()
     ]
     await cq.edit_message_text(
-        f"🛒 <b>ᴍᴀᴅᴀʀᴀ sʜᴏᴘ</b>\n\n" + "\n\n".join(lines) +
+        f"{pe('coin','🪙')} <b>ᴍᴀᴅᴀʀᴀ sʜᴏᴘ</b>\n\n" + "\n\n".join(lines) +
         f"\n\n<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=shop_keyboard()
@@ -336,13 +327,13 @@ async def cb_open_shop(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^info_card$"))
 async def cb_info_card(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"🃏 <b>ᴄᴀʀᴅ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
-        "• ᴇᴀᴄʜ ᴘʟᴀʏᴇʀ ɢᴇᴛs 4 ʜɪᴅᴅᴇɴ ᴄᴀʀᴅs: ᴀ, ʙ, ᴄ, ᴅ\n"
-        "• ᴄᴀʀᴅ sᴜᴍ ɪs ᴇQᴜᴀʟ — ᴏɴʟʏ sᴛʀᴀᴛᴇɢʏ ᴡɪɴs!\n"
-        "• ᴇᴀᴄʜ ʀᴏᴜɴᴅ, ғʟɪᴘ ᴏɴᴇ — ʜɪɢʜᴇsᴛ ᴡɪɴs\n"
-        "• 4 ʀᴏᴜɴᴅs — ʜɪɢʜᴇsᴛ sᴄᴏʀᴇ ᴡɪɴs ᴛʜᴇ ᴘᴏᴛ 🏆\n"
-        "• 60s ᴛɪᴍᴇʀ ᴘᴇʀ ᴛᴜʀɴ\n\n"
-        "<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /card | /bet | /flip a/b/c/d\n\n"
+        f"{pe('card','🃏')} <b>ᴄᴀʀᴅ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
+        f"• ᴇᴀᴄʜ ᴘʟᴀʏᴇʀ ɢᴇᴛs 4 ʜɪᴅᴅᴇɴ ᴄᴀʀᴅs: ᴀ, ʙ, ᴄ, ᴅ\n"
+        f"• ᴄᴀʀᴅ sᴜᴍ ɪs ᴇQᴜᴀʟ — ᴏɴʟʏ sᴛʀᴀᴛᴇɢʏ ᴡɪɴs!\n"
+        f"• ᴇᴀᴄʜ ʀᴏᴜɴᴅ, ғʟɪᴘ ᴏɴᴇ — ʜɪɢʜᴇsᴛ ᴡɪɴs\n"
+        f"• 4 ʀᴏᴜɴᴅs — ʜɪɢʜᴇsᴛ sᴄᴏʀᴇ ᴡɪɴs ᴛʜᴇ ᴘᴏᴛ {pe('trophy','🏆')}\n"
+        f"• 60s ᴛɪᴍᴇʀ ᴘᴇʀ ᴛᴜʀɴ\n\n"
+        f"<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /card | /bet | /flip a/b/c/d\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard([btn("🔙 ʙᴀᴄᴋ", data="help_games")])
@@ -352,12 +343,12 @@ async def cb_info_card(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^info_bomb$"))
 async def cb_info_bomb(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"💣 <b>ʙᴏᴍʙ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
-        "• ᴘᴀʏ ᴇɴᴛʀʏ ғᴇᴇ ᴛᴏ ᴊᴏɪɴ\n"
-        "• ᴀ ʙᴏᴍʙ ɪs sᴇᴄʀᴇᴛʟʏ ᴀssɪɢɴᴇᴅ\n"
-        "• ᴜsᴇ /pass — ʙᴏᴍʙ ᴇxᴘʟᴏᴅᴇs ʀᴀɴᴅᴏᴍʟʏ 💥\n"
-        "• ʟᴀsᴛ ᴘʟᴀʏᴇʀ ᴀʟɪᴠᴇ ᴡɪɴs!\n\n"
-        "<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /bomb | /join | /pass | /rank\n\n"
+        f"{pe('bomb','💣')} <b>ʙᴏᴍʙ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
+        f"• ᴘᴀʏ ᴇɴᴛʀʏ ғᴇᴇ ᴛᴏ ᴊᴏɪɴ\n"
+        f"• ᴀ ʙᴏᴍʙ ɪs sᴇᴄʀᴇᴛʟʏ ᴀssɪɢɴᴇᴅ\n"
+        f"• ᴜsᴇ /pass — ʙᴏᴍʙ ᴇxᴘʟᴏᴅᴇs ʀᴀɴᴅᴏᴍʟʏ {pe('fire','💥')}\n"
+        f"• ʟᴀsᴛ ᴘʟᴀʏᴇʀ ᴀʟɪᴠᴇ ᴡɪɴs!\n\n"
+        f"<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /bomb | /join | /pass | /rank\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard([btn("🔙 ʙᴀᴄᴋ", data="help_games")])
@@ -367,13 +358,13 @@ async def cb_info_bomb(_, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^info_hack$"))
 async def cb_info_hack(_, cq: CallbackQuery):
     await cq.edit_message_text(
-        f"🔐 <b>ʜᴀᴄᴋ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
-        "• ʜᴏsᴛ sᴇᴛs ᴀ sᴇᴄʀᴇᴛ ᴘᴀssᴡᴏʀᴅ (3-6 ᴅɪɢɪᴛs)\n"
-        "• ᴘʟᴀʏᴇʀs ʀᴇɢɪsᴛᴇʀ & ɢᴜᴇss\n"
-        "• 🟢 ʜᴀᴄᴋs = ʀɪɢʜᴛ ᴅɪɢɪᴛ, ʀɪɢʜᴛ ᴘᴏs\n"
-        "• 🟡 ɢʟɪᴛᴄʜᴇs = ʀɪɢʜᴛ ᴅɪɢɪᴛ, ᴡʀᴏɴɢ ᴘᴏs\n"
-        "• ғɪʀsᴛ ᴛᴏ ᴄʀᴀᴄᴋ ᴡɪɴs!\n\n"
-        "<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /hack | /register | /guess | /end\n\n"
+        f"{pe('lock','🔐')} <b>ʜᴀᴄᴋ ɢᴀᴍᴇ ʀᴜʟᴇs</b>\n\n"
+        f"• ʜᴏsᴛ sᴇᴛs ᴀ sᴇᴄʀᴇᴛ ᴘᴀssᴡᴏʀᴅ (3-6 ᴅɪɢɪᴛs)\n"
+        f"• ᴘʟᴀʏᴇʀs ʀᴇɢɪsᴛᴇʀ & ɢᴜᴇss\n"
+        f"• {pe('checkmark','🟢')} ʜᴀᴄᴋs = ʀɪɢʜᴛ ᴅɪɢɪᴛ, ʀɪɢʜᴛ ᴘᴏs\n"
+        f"• 🟡 ɢʟɪᴛᴄʜᴇs = ʀɪɢʜᴛ ᴅɪɢɪᴛ, ᴡʀᴏɴɢ ᴘᴏs\n"
+        f"• ғɪʀsᴛ ᴛᴏ ᴄʀᴀᴄᴋ ᴡɪɴs!\n\n"
+        f"<b>ᴄᴏᴍᴍᴀɴᴅs:</b> /hack | /register | /guess | /end\n\n"
         f"<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=keyboard([btn("🔙 ʙᴀᴄᴋ", data="help_games")])
@@ -391,6 +382,7 @@ async def top_cmd(_, msg: Message):
         for i, u in enumerate(users)
     ]
     await msg.reply(
-        f"🏆 <b>ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ</b>\n\n" + "\n".join(lines) + f"\n\n<i>{POWERED_BY}</i>",
+        f"{pe('trophy','🏆')} <b>ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ</b>\n\n" + "\n".join(lines) +
+        f"\n\n<i>{POWERED_BY}</i>",
         parse_mode=ParseMode.HTML
     )
