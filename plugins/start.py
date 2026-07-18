@@ -14,7 +14,7 @@ from utils.buttons import (
     help_back_keyboard, keyboard, primary_btn, success_btn,
     danger_btn, btn,
 )
-from config import BOT_NAME, POWERED_BY, VERSION, START_IMAGE
+from config import BOT_NAME, POWERED_BY, VERSION, START_VIDEO, START_IMAGE, pe
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -30,18 +30,22 @@ async def start_private(_, msg: Message):
     )
     name = msg.from_user.first_name or "ᴘʟᴀʏᴇʀ"
     caption = (
-        f"👑 <b>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {BOT_NAME}!</b>\n"
+        f"{pe('crown', '👑')} <b>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {BOT_NAME}!</b>\n"
         f"━━━━━━━━━━━━━━━━━\n\n"
         f"👋 ʜᴇʏ <b>{name}</b>! ɪ'ᴍ ᴛʜᴇ ᴜʟᴛɪᴍᴀᴛᴇ ɢᴀᴍɪɴɢ ʙᴏᴛ!\n\n"
-        f"🎮 ᴘʟᴀʏ ᴄᴀʀᴅ ɢᴀᴍᴇs, ʙᴏᴍʙ ᴘᴀssᴇs &amp; ʜᴀᴄᴋɪɴɢ\n"
-        f"⚔️ ᴀᴛᴛᴀᴄᴋ, ʀᴏʙ &amp; ᴅᴏᴍɪɴᴀᴛᴇ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀs\n"
-        f"💘 ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ &amp; ᴇɴᴊᴏʏ ʀᴇᴡᴀʀᴅs\n"
-        f"💰 ᴇᴀʀɴ ᴅᴀɪʟʏ ᴄᴏɪɴs &amp; ᴄʟɪᴍʙ ᴛʜᴇ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ!\n\n"
-        f"🪙 <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code>  "
-        f"⭐ <b>ᴡɪɴs:</b> <code>{user['wins']}</code>\n\n"
+        f"{pe('game', '🎮')} ᴘʟᴀʏ ᴄᴀʀᴅ ɢᴀᴍᴇs, ʙᴏᴍʙ ᴘᴀssᴇs &amp; ʜᴀᴄᴋɪɴɢ\n"
+        f"{pe('sword', '⚔️')} ᴀᴛᴛᴀᴄᴋ, ʀᴏʙ &amp; ᴅᴏᴍɪɴᴀᴛᴇ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀs\n"
+        f"{pe('heart', '💘')} ᴘʀᴏᴘᴏsᴇ, ᴍᴀʀʀʏ &amp; ᴇɴᴊᴏʏ ʀᴇᴡᴀʀᴅs\n"
+        f"{pe('coin', '🪙')} ᴇᴀʀɴ ᴅᴀɪʟʏ ᴄᴏɪɴs &amp; ᴄʟɪᴍʙ ᴛʜᴇ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ!\n\n"
+        f"{pe('coin', '🪙')} <b>ʙᴀʟᴀɴᴄᴇ:</b> <code>{user['coins']:,}</code>  "
+        f"{pe('star', '⭐')} <b>ᴡɪɴs:</b> <code>{user['wins']}</code>\n\n"
         f"<i>{POWERED_BY} | {VERSION}</i>"
     )
-    if os.path.exists(START_IMAGE):
+    if os.path.exists(START_VIDEO):
+        await msg.reply_video(START_VIDEO, caption=caption,
+                              reply_markup=start_keyboard(), parse_mode=ParseMode.HTML,
+                              has_spoiler=True)
+    elif os.path.exists(START_IMAGE):
         await msg.reply_photo(START_IMAGE, caption=caption,
                               reply_markup=start_keyboard(), parse_mode=ParseMode.HTML)
     else:

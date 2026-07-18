@@ -10,7 +10,7 @@ from pyrogram import filters
 from pyrogram.enums import ParseMode, ChatMembersFilter
 from pyrogram.types import Message, ChatPermissions
 from database import get_or_create_user, set_welcome, get_welcome
-from config import POWERED_BY, PING_IMAGE, BOT_NAME, VERSION
+from config import POWERED_BY, PING_VIDEO, PING_IMAGE, BOT_NAME, VERSION, pe
 import os
 
 
@@ -33,15 +33,18 @@ async def ping_cmd(_, msg: Message):
     ms    = int((time.time() - start) * 1000)
 
     caption = (
-        f"🏓 <b>ᴘᴏɴɢ!</b>\n\n"
-        f"⚡ ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
+        f"{pe('ping', '🏓')} <b>ᴘᴏɴɢ!</b>\n\n"
+        f"{pe('zap', '⚡')} ʟᴀᴛᴇɴᴄʏ: <code>{ms}ms</code>\n"
         f"🤖 ʙᴏᴛ: <b>{BOT_NAME}</b>\n"
         f"📦 ᴠᴇʀsɪᴏɴ: <code>{VERSION}</code>\n"
-        f"✅ sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ\n\n"
+        f"{pe('fire', '✅')} sᴛᴀᴛᴜs: ᴏɴʟɪɴᴇ & ʀᴇᴀᴅʏ\n\n"
         f"<i>{POWERED_BY}</i>"
     )
     await sent.delete()
-    if os.path.exists(PING_IMAGE):
+    if os.path.exists(PING_VIDEO):
+        await msg.reply_video(PING_VIDEO, caption=caption, parse_mode=ParseMode.HTML,
+                              has_spoiler=True)
+    elif os.path.exists(PING_IMAGE):
         await msg.reply_photo(PING_IMAGE, caption=caption, parse_mode=ParseMode.HTML)
     else:
         await msg.reply(caption, parse_mode=ParseMode.HTML)

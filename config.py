@@ -23,8 +23,43 @@ VERSION       = "v2.0"
 DATABASE_PATH = "madara.db"
 
 # ── Assets ──────────────────────────────────────────────────────────────────
-START_IMAGE = "assets/start.jpg"
-PING_IMAGE  = "assets/ping.jpg"
+START_IMAGE = "assets/start.jpg"   # legacy fallback
+PING_IMAGE  = "assets/ping.jpg"    # legacy fallback
+START_VIDEO = "assets/start.mp4"
+PING_VIDEO  = "assets/ping.mp4"
+
+# ── Premium emoji IDs ────────────────────────────────────────────────────────
+# Telegram animated premium emoji document IDs.
+# Used in <tg-emoji emoji-id="..."> HTML tags (messages) and
+# icon_custom_emoji_id (Kurigram buttons). Update any that don't render.
+PREMIUM_EMOJI: dict[str, str] = {
+    "crown":   "5361541227604224419",
+    "fire":    "5368324170671202286",
+    "zap":     "5361557318773497110",
+    "diamond": "5451882987501923264",
+    "trophy":  "5361542827403757969",
+    "game":    "5373230226990753741",
+    "bomb":    "5368372011680195584",
+    "coin":    "5368386954062298140",
+    "sword":   "5371221553196297388",
+    "money":   "5368364594881594549",
+    "ping":    "5357415979462367369",
+    "lock":    "5368432884953202098",
+    "card":    "5379872416477052988",
+    "star":    "5368402298348803710",
+    "shield":  "5371580987913879244",
+    "gift":    "5373235006560695286",
+    "heart":   "5368386702499816960",
+    "book":    "5380219184659339251",
+}
+
+
+def pe(name: str, fallback: str) -> str:
+    """Return a premium animated <tg-emoji> tag; falls back to plain emoji."""
+    eid = PREMIUM_EMOJI.get(name, "")
+    if eid:
+        return f'<tg-emoji emoji-id="{eid}">{fallback}</tg-emoji>'
+    return fallback
 
 # ── Game settings ───────────────────────────────────────────────────────────
 CARD_TURN_TIMEOUT  = 60
