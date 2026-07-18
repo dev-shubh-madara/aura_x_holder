@@ -15,44 +15,38 @@ def _eid(name: str) -> str | None:
 
 # ── Factories ────────────────────────────────────────────────────────────────
 
-def btn(text: str, data: str = None, url: str = None,
-        emoji: str = None) -> InlineKeyboardButton:
+def _build(text: str, style=None, data: str = None, url: str = None,
+           emoji: str = None) -> InlineKeyboardButton:
+    """Internal factory — only injects icon_custom_emoji_id when ID is valid."""
     kwargs = {}
-    if emoji:
-        kwargs["icon_custom_emoji_id"] = _eid(emoji) or ""
+    if style is not None:
+        kwargs["style"] = style
+    eid = _eid(emoji) if emoji else None
+    if eid:
+        kwargs["icon_custom_emoji_id"] = eid
     if url:
         return InlineKeyboardButton(text, url=url, **kwargs)
     return InlineKeyboardButton(text, callback_data=data, **kwargs)
+
+
+def btn(text: str, data: str = None, url: str = None,
+        emoji: str = None) -> InlineKeyboardButton:
+    return _build(text, data=data, url=url, emoji=emoji)
 
 
 def primary_btn(text: str, data: str = None, url: str = None,
                 emoji: str = None) -> InlineKeyboardButton:
-    kwargs = {"style": ButtonStyle.PRIMARY}
-    if emoji:
-        kwargs["icon_custom_emoji_id"] = _eid(emoji) or ""
-    if url:
-        return InlineKeyboardButton(text, url=url, **kwargs)
-    return InlineKeyboardButton(text, callback_data=data, **kwargs)
+    return _build(text, style=ButtonStyle.PRIMARY, data=data, url=url, emoji=emoji)
 
 
 def success_btn(text: str, data: str = None, url: str = None,
                 emoji: str = None) -> InlineKeyboardButton:
-    kwargs = {"style": ButtonStyle.SUCCESS}
-    if emoji:
-        kwargs["icon_custom_emoji_id"] = _eid(emoji) or ""
-    if url:
-        return InlineKeyboardButton(text, url=url, **kwargs)
-    return InlineKeyboardButton(text, callback_data=data, **kwargs)
+    return _build(text, style=ButtonStyle.SUCCESS, data=data, url=url, emoji=emoji)
 
 
 def danger_btn(text: str, data: str = None, url: str = None,
                emoji: str = None) -> InlineKeyboardButton:
-    kwargs = {"style": ButtonStyle.DANGER}
-    if emoji:
-        kwargs["icon_custom_emoji_id"] = _eid(emoji) or ""
-    if url:
-        return InlineKeyboardButton(text, url=url, **kwargs)
-    return InlineKeyboardButton(text, callback_data=data, **kwargs)
+    return _build(text, style=ButtonStyle.DANGER, data=data, url=url, emoji=emoji)
 
 
 def keyboard(*rows) -> InlineKeyboardMarkup:
