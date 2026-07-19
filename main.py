@@ -50,8 +50,9 @@ async def main():
     import plugins.social       # noqa: F401
     import plugins.rpg          # noqa: F401
     import plugins.economy      # noqa: F401
-    import plugins.group_mgmt       # noqa: F401
-    import plugins.emoji_extractor  # noqa: F401  ← temp, remove after collecting IDs
+    import plugins.group_mgmt   # noqa: F401
+    import plugins.uno_game     # noqa: F401
+    import plugins.wordseek     # noqa: F401
     print("✅ ᴘʟᴜɢɪɴs ʟᴏᴀᴅᴇᴅ.")
 
     os.makedirs("sessions", exist_ok=True)

@@ -31,6 +31,9 @@ async def init_db():
     await db.daily.create_index("user_id", unique=True)
     await db.group_claims.create_index([("user_id", 1), ("chat_id", 1)], unique=True)
     await db.welcome_settings.create_index("chat_id", unique=True)
+    await db.uno_games.create_index("chat_id", unique=True)
+    await db.wordseek_games.create_index("chat_id", unique=True)
+    await db.uno_stats.create_index("user_id", unique=True)
     print("✅ MongoDB indexes ready.")
 
 

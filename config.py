@@ -75,6 +75,16 @@ PREMIUM_EMOJI: dict[str, str] = {
     "gamepad":    "5409098988156629257",   # 👾
     "fire2":      "5409127373595487294",   # 🔥 (status style)
     "folder":     "5409111052719767901",   # 📁
+    # ── From emj_8aa5c_by_TgEmodziBot ───────────────────────────────────────
+    "uno":        "5222109572598315310",   # 🎴  uno card
+    "dice":       "5222067174428819458",   # 🎲  dice
+    "joker":      "5219521865893520274",   # 🃏  joker card
+    "rainbow":    "5219768622822228908",   # 🌈  rainbow/wild
+    "search":     "5221199477799002490",   # 🔍  search/wordseek
+    "letters":    "5221028936905441996",   # 🔤  letters
+    "wordle":     "5221199477799002490",   # 🔍  wordle alias
+    "notepad2":   "5220936717678545038",   # 📓  notepad2
+    "idea2":      "5222087861012682851",   # 💡  idea
     # ── Button-slot aliases ──────────────────────────────────────────────────
     "game":       "5409098988156629257",   # 👾  gamepad
     "trophy":     "6082163188558728946",   # ⭐  star → trophy
