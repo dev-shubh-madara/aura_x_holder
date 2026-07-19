@@ -13,7 +13,12 @@ from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message
 from config import POWERED_BY, pe
-from database import _get_db, update_coins
+from database import (
+    get_wordseek as _get_ws_db,
+    save_wordseek as _save_ws_db,
+    delete_wordseek as _del_ws_db,
+    update_coins,
+)
 from data.words import (
     ANSWERS4, VALID4,
     ANSWERS5, VALID5,
@@ -27,21 +32,19 @@ WIN_COINS = {4: 150, 5: 250, 6: 400}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  DB helpers
+#  DB helpers (SQLite-backed)
 # ══════════════════════════════════════════════════════════════════════════════
 
 async def _get_ws(chat_id: int) -> dict | None:
-    return await _get_db().wordseek_games.find_one({"chat_id": chat_id}, {"_id": 0})
+    return await _get_ws_db(chat_id)
 
 
 async def _save_ws(game: dict):
-    await _get_db().wordseek_games.update_one(
-        {"chat_id": game['chat_id']}, {"$set": game}, upsert=True,
-    )
+    await _save_ws_db(game)
 
 
 async def _del_ws(chat_id: int):
-    await _get_db().wordseek_games.delete_one({"chat_id": chat_id})
+    await _del_ws_db(chat_id)
 
 
 # ══════════════════════════════════════════════════════════════════════════════

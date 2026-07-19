@@ -13,7 +13,12 @@ from pyrogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton,
 )
 from config import POWERED_BY, pe
-from database import _get_db, update_coins, record_win, record_loss
+from database import (
+    get_uno_game as _get_game_db,
+    save_uno_game as _save_game_db,
+    delete_uno_game as _del_game_db,
+    update_coins, record_win, record_loss,
+)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  Card constants
@@ -171,22 +176,19 @@ def color_kb() -> InlineKeyboardMarkup:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  Database helpers
+#  Database helpers (SQLite-backed)
 # ══════════════════════════════════════════════════════════════════════════════
 
 async def _get_game(chat_id: int) -> dict | None:
-    return await _get_db().uno_games.find_one({"chat_id": chat_id}, {"_id": 0})
+    return await _get_game_db(chat_id)
 
 
 async def _save_game(game: dict):
-    game['last_activity'] = time.time()
-    await _get_db().uno_games.update_one(
-        {"chat_id": game['chat_id']}, {"$set": game}, upsert=True
-    )
+    await _save_game_db(game)
 
 
 async def _del_game(chat_id: int):
-    await _get_db().uno_games.delete_one({"chat_id": chat_id})
+    await _del_game_db(chat_id)
 
 
 async def _update_game_msg(chat_id: int, msg_id: int, game: dict):

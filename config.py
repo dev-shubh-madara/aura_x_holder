@@ -19,8 +19,8 @@ BOT_USERNAME  = "@SHRISTI_GAME_PLAYER_bot"
 POWERED_BY    = "⚡ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴍᴀᴅᴀʀᴀ"
 VERSION       = "v2.0"
 
-# ── Database (MongoDB) ───────────────────────────────────────────────────────
-MONGO_URI = os.environ.get("MONGO_URI", "")
+# ── Database ────────────────────────────────────────────────────────────────
+DATABASE_PATH = "madara.db"   # SQLite file
 
 # ── Assets ──────────────────────────────────────────────────────────────────
 START_IMAGE = "assets/start.jpg"   # legacy fallback

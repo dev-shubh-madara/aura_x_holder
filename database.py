@@ -1,283 +1,436 @@
 """
-MadaraDefaultr – Database Layer (MongoDB / Motor)
+MadaraDefaultr – Database Layer (SQLite / aiosqlite)
 Powered by Madara
 """
 
+import aiosqlite
+import json
 import time
-import motor.motor_asyncio
-from config import MONGO_URI, STARTING_COINS
 
-_client: motor.motor_asyncio.AsyncIOMotorClient | None = None
-_db = None
+DB_PATH = "madara.db"
 
-
-def _get_db():
-    global _client, _db
-    if _db is None:
-        _client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
-        _db = _client["madaraxgame"]
-    return _db
-
+# ─── Init ─────────────────────────────────────────────────────────────────────
 
 async def init_db():
-    db = _get_db()
-    await db.users.create_index("user_id", unique=True)
-    await db.bomb_stats.create_index("user_id", unique=True)
-    await db.card_stats.create_index("user_id", unique=True)
-    await db.hack_stats.create_index("user_id", unique=True)
-    await db.relationships.create_index("user_id", unique=True)
-    await db.inventory.create_index([("user_id", 1), ("item", 1)])
-    await db.combat.create_index("user_id", unique=True)
-    await db.daily.create_index("user_id", unique=True)
-    await db.group_claims.create_index([("user_id", 1), ("chat_id", 1)], unique=True)
-    await db.welcome_settings.create_index("chat_id", unique=True)
-    await db.uno_games.create_index("chat_id", unique=True)
-    await db.wordseek_games.create_index("chat_id", unique=True)
-    await db.uno_stats.create_index("user_id", unique=True)
-    print("✅ MongoDB indexes ready.")
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.executescript("""
+            CREATE TABLE IF NOT EXISTS users (
+                user_id     INTEGER PRIMARY KEY,
+                username    TEXT    DEFAULT '',
+                first_name  TEXT    DEFAULT '',
+                coins       INTEGER DEFAULT 5000,
+                gems        INTEGER DEFAULT 0,
+                wins        INTEGER DEFAULT 0,
+                losses      INTEGER DEFAULT 0,
+                games_played INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS relationships (
+                user_id    INTEGER PRIMARY KEY,
+                partner_id INTEGER DEFAULT 0,
+                status     TEXT    DEFAULT 'single'
+            );
+            CREATE TABLE IF NOT EXISTS inventory (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id   INTEGER,
+                item      TEXT,
+                bought_at REAL DEFAULT 0,
+                UNIQUE(user_id, item)
+            );
+            CREATE TABLE IF NOT EXISTS combat (
+                user_id          INTEGER PRIMARY KEY,
+                kills            INTEGER DEFAULT 0,
+                deaths           INTEGER DEFAULT 0,
+                protection_until REAL    DEFAULT 0,
+                last_kill        REAL    DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS daily (
+                user_id    INTEGER PRIMARY KEY,
+                last_daily REAL    DEFAULT 0,
+                streak     INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS group_claims (
+                user_id    INTEGER,
+                chat_id    INTEGER,
+                last_claim REAL DEFAULT 0,
+                PRIMARY KEY (user_id, chat_id)
+            );
+            CREATE TABLE IF NOT EXISTS welcome_settings (
+                chat_id INTEGER PRIMARY KEY,
+                enabled INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS bomb_stats (
+                user_id   INTEGER PRIMARY KEY,
+                wins      INTEGER DEFAULT 0,
+                losses    INTEGER DEFAULT 0,
+                coins_won INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS card_stats (
+                user_id   INTEGER PRIMARY KEY,
+                wins      INTEGER DEFAULT 0,
+                losses    INTEGER DEFAULT 0,
+                coins_won INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS hack_stats (
+                user_id   INTEGER PRIMARY KEY,
+                wins      INTEGER DEFAULT 0,
+                losses    INTEGER DEFAULT 0,
+                coins_won INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS uno_stats (
+                user_id   INTEGER PRIMARY KEY,
+                wins      INTEGER DEFAULT 0,
+                losses    INTEGER DEFAULT 0,
+                coins_won INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS uno_games (
+                chat_id INTEGER PRIMARY KEY,
+                data    TEXT DEFAULT '{}'
+            );
+            CREATE TABLE IF NOT EXISTS wordseek_games (
+                chat_id INTEGER PRIMARY KEY,
+                data    TEXT DEFAULT '{}'
+            );
+        """)
+        await db.commit()
+    print("✅ SQLite database ready.")
+
+
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+def _row(r) -> dict:
+    return dict(r) if r else {}
 
 
 # ─── Users ───────────────────────────────────────────────────────────────────
 
+STARTING_COINS = 5000
+
 async def get_or_create_user(user_id: int, username: str = "", first_name: str = "") -> dict:
-    db = _get_db()
-    await db.users.update_one(
-        {"user_id": user_id},
-        {
-            "$setOnInsert": {
-                "user_id": user_id,
-                "coins": STARTING_COINS,
-                "gems": 0,
-                "wins": 0,
-                "losses": 0,
-                "games_played": 0,
-            },
-            "$set": {"username": username, "first_name": first_name},
-        },
-        upsert=True,
-    )
-    return await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute(
+            """INSERT INTO users (user_id, username, first_name, coins)
+               VALUES (?, ?, ?, ?)
+               ON CONFLICT(user_id) DO UPDATE SET
+                 username=excluded.username,
+                 first_name=excluded.first_name""",
+            (user_id, username, first_name, STARTING_COINS),
+        )
+        await db.commit()
+        row = await (await db.execute(
+            "SELECT * FROM users WHERE user_id=?", (user_id,)
+        )).fetchone()
+        return _row(row)
 
 
 async def get_balance(user_id: int) -> int:
-    db = _get_db()
-    doc = await db.users.find_one({"user_id": user_id}, {"coins": 1})
-    return doc["coins"] if doc else 0
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT coins FROM users WHERE user_id=?", (user_id,)
+        )).fetchone()
+        return row[0] if row else 0
 
 
 async def update_coins(user_id: int, delta: int):
-    """Add delta to coins; floor at 0."""
-    db = _get_db()
-    await db.users.update_one(
-        {"user_id": user_id},
-        [{"$set": {"coins": {"$max": [0, {"$add": ["$coins", delta]}]}}}],
-    )
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "UPDATE users SET coins = MAX(0, coins + ?) WHERE user_id=?",
+            (delta, user_id),
+        )
+        await db.commit()
 
 
 async def set_coins(user_id: int, amount: int):
-    db = _get_db()
-    await db.users.update_one({"user_id": user_id}, {"$set": {"coins": amount}})
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "UPDATE users SET coins=? WHERE user_id=?", (amount, user_id)
+        )
+        await db.commit()
 
 
 async def record_win(user_id: int, table: str, coins_won: int):
-    db = _get_db()
-    await db[table].update_one(
-        {"user_id": user_id},
-        {"$inc": {"wins": 1, "coins_won": coins_won}},
-        upsert=True,
-    )
-    await db.users.update_one(
-        {"user_id": user_id},
-        {"$inc": {"wins": 1, "games_played": 1}},
-    )
+    _ALLOWED = {"bomb_stats","card_stats","hack_stats","uno_stats"}
+    if table not in _ALLOWED:
+        table = "card_stats"
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            f"""INSERT INTO {table} (user_id, wins, coins_won) VALUES (?,1,?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                  wins=wins+1, coins_won=coins_won+excluded.coins_won""",
+            (user_id, coins_won),
+        )
+        await db.execute(
+            """UPDATE users SET wins=wins+1, games_played=games_played+1
+               WHERE user_id=?""",
+            (user_id,),
+        )
+        await db.commit()
 
 
 async def record_loss(user_id: int, table: str):
-    db = _get_db()
-    await db[table].update_one(
-        {"user_id": user_id},
-        {"$inc": {"losses": 1}},
-        upsert=True,
-    )
-    await db.users.update_one(
-        {"user_id": user_id},
-        {"$inc": {"losses": 1, "games_played": 1}},
-    )
+    _ALLOWED = {"bomb_stats","card_stats","hack_stats","uno_stats"}
+    if table not in _ALLOWED:
+        table = "card_stats"
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            f"""INSERT INTO {table} (user_id, losses) VALUES (?,1)
+                ON CONFLICT(user_id) DO UPDATE SET losses=losses+1""",
+            (user_id,),
+        )
+        await db.execute(
+            """UPDATE users SET losses=losses+1, games_played=games_played+1
+               WHERE user_id=?""",
+            (user_id,),
+        )
+        await db.commit()
 
 
 async def get_top_users(limit: int = 10) -> list:
-    db = _get_db()
-    cursor = db.users.find({}, {"_id": 0}).sort("coins", -1).limit(limit)
-    return await cursor.to_list(limit)
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        rows = await (await db.execute(
+            "SELECT * FROM users ORDER BY coins DESC LIMIT ?", (limit,)
+        )).fetchall()
+        return [_row(r) for r in rows]
 
 
 async def get_bomb_leaderboard(limit: int = 10) -> list:
-    db = _get_db()
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "users",
-                "localField": "user_id",
-                "foreignField": "user_id",
-                "as": "user",
-            }
-        },
-        {"$unwind": "$user"},
-        {
-            "$project": {
-                "_id": 0,
-                "first_name": "$user.first_name",
-                "username": "$user.username",
-                "wins": 1,
-                "losses": 1,
-                "coins_won": 1,
-            }
-        },
-        {"$sort": {"wins": -1}},
-        {"$limit": limit},
-    ]
-    cursor = db.bomb_stats.aggregate(pipeline)
-    return await cursor.to_list(limit)
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        rows = await (await db.execute(
+            """SELECT u.first_name, u.username, b.wins, b.losses, b.coins_won
+               FROM bomb_stats b JOIN users u ON b.user_id=u.user_id
+               ORDER BY b.wins DESC LIMIT ?""",
+            (limit,),
+        )).fetchall()
+        return [_row(r) for r in rows]
 
 
 async def get_user_rank(user_id: int) -> int:
-    db = _get_db()
-    user = await db.users.find_one({"user_id": user_id}, {"coins": 1})
-    if not user:
-        return 0
-    count = await db.users.count_documents({"coins": {"$gt": user["coins"]}})
-    return count + 1
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT coins FROM users WHERE user_id=?", (user_id,)
+        )).fetchone()
+        if not row:
+            return 0
+        count_row = await (await db.execute(
+            "SELECT COUNT(*) FROM users WHERE coins > ?", (row[0],)
+        )).fetchone()
+        return (count_row[0] if count_row else 0) + 1
 
 
 # ─── Relationships ────────────────────────────────────────────────────────────
 
 async def get_relationship(user_id: int) -> dict:
-    db = _get_db()
-    await db.relationships.update_one(
-        {"user_id": user_id},
-        {"$setOnInsert": {"user_id": user_id, "partner_id": 0, "status": "single"}},
-        upsert=True,
-    )
-    return await db.relationships.find_one({"user_id": user_id}, {"_id": 0})
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute(
+            """INSERT INTO relationships (user_id) VALUES (?)
+               ON CONFLICT(user_id) DO NOTHING""",
+            (user_id,),
+        )
+        await db.commit()
+        row = await (await db.execute(
+            "SELECT * FROM relationships WHERE user_id=?", (user_id,)
+        )).fetchone()
+        return _row(row)
 
 
 async def set_relationship(user_id: int, partner_id: int, status: str):
-    db = _get_db()
-    await db.relationships.update_one(
-        {"user_id": user_id},
-        {"$set": {"partner_id": partner_id, "status": status}},
-        upsert=True,
-    )
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO relationships (user_id, partner_id, status) VALUES (?,?,?)
+               ON CONFLICT(user_id) DO UPDATE SET
+                 partner_id=excluded.partner_id, status=excluded.status""",
+            (user_id, partner_id, status),
+        )
+        await db.commit()
 
 
 # ─── Inventory ────────────────────────────────────────────────────────────────
 
 async def get_inventory(user_id: int) -> list:
-    db = _get_db()
-    cursor = db.inventory.find({"user_id": user_id}, {"_id": 0, "item": 1})
-    docs = await cursor.to_list(None)
-    return [d["item"] for d in docs]
+    async with aiosqlite.connect(DB_PATH) as db:
+        rows = await (await db.execute(
+            "SELECT item FROM inventory WHERE user_id=?", (user_id,)
+        )).fetchall()
+        return [r[0] for r in rows]
 
 
 async def has_item(user_id: int, item: str) -> bool:
-    db = _get_db()
-    return await db.inventory.find_one({"user_id": user_id, "item": item}) is not None
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT 1 FROM inventory WHERE user_id=? AND item=?", (user_id, item)
+        )).fetchone()
+        return row is not None
 
 
 async def add_item(user_id: int, item: str):
-    db = _get_db()
-    if not await has_item(user_id, item):
-        await db.inventory.insert_one(
-            {"user_id": user_id, "item": item, "bought_at": time.time()}
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO inventory (user_id, item, bought_at) VALUES (?,?,?)
+               ON CONFLICT(user_id, item) DO NOTHING""",
+            (user_id, item, time.time()),
         )
+        await db.commit()
 
 
 # ─── Combat ───────────────────────────────────────────────────────────────────
 
 async def get_combat(user_id: int) -> dict:
-    db = _get_db()
-    await db.combat.update_one(
-        {"user_id": user_id},
-        {
-            "$setOnInsert": {
-                "user_id": user_id,
-                "kills": 0,
-                "deaths": 0,
-                "protection_until": 0.0,
-                "last_kill": 0.0,
-            }
-        },
-        upsert=True,
-    )
-    return await db.combat.find_one({"user_id": user_id}, {"_id": 0})
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute(
+            "INSERT INTO combat (user_id) VALUES (?) ON CONFLICT(user_id) DO NOTHING",
+            (user_id,),
+        )
+        await db.commit()
+        row = await (await db.execute(
+            "SELECT * FROM combat WHERE user_id=?", (user_id,)
+        )).fetchone()
+        return _row(row)
 
 
 async def update_combat(user_id: int, **kwargs):
     if not kwargs:
         return
-    db = _get_db()
-    await db.combat.update_one({"user_id": user_id}, {"$set": kwargs})
+    cols = ", ".join(f"{k}=?" for k in kwargs)
+    vals = list(kwargs.values()) + [user_id]
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(f"UPDATE combat SET {cols} WHERE user_id=?", vals)
+        await db.commit()
 
 
 async def is_protected(user_id: int) -> bool:
     c = await get_combat(user_id)
-    return c["protection_until"] > time.time()
+    return c.get("protection_until", 0) > time.time()
 
 
 # ─── Daily / Claim ────────────────────────────────────────────────────────────
 
 async def get_daily(user_id: int) -> dict:
-    db = _get_db()
-    await db.daily.update_one(
-        {"user_id": user_id},
-        {"$setOnInsert": {"user_id": user_id, "last_daily": 0.0, "streak": 0}},
-        upsert=True,
-    )
-    return await db.daily.find_one({"user_id": user_id}, {"_id": 0})
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute(
+            "INSERT INTO daily (user_id) VALUES (?) ON CONFLICT(user_id) DO NOTHING",
+            (user_id,),
+        )
+        await db.commit()
+        row = await (await db.execute(
+            "SELECT * FROM daily WHERE user_id=?", (user_id,)
+        )).fetchone()
+        return _row(row)
 
 
 async def set_daily(user_id: int, streak: int):
-    db = _get_db()
-    await db.daily.update_one(
-        {"user_id": user_id},
-        {"$set": {"last_daily": time.time(), "streak": streak}},
-        upsert=True,
-    )
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO daily (user_id, last_daily, streak) VALUES (?,?,?)
+               ON CONFLICT(user_id) DO UPDATE SET
+                 last_daily=excluded.last_daily, streak=excluded.streak""",
+            (user_id, time.time(), streak),
+        )
+        await db.commit()
 
 
 async def get_group_claim(user_id: int, chat_id: int) -> float:
-    db = _get_db()
-    doc = await db.group_claims.find_one(
-        {"user_id": user_id, "chat_id": chat_id}, {"_id": 0, "last_claim": 1}
-    )
-    return doc["last_claim"] if doc else 0.0
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT last_claim FROM group_claims WHERE user_id=? AND chat_id=?",
+            (user_id, chat_id),
+        )).fetchone()
+        return row[0] if row else 0.0
 
 
 async def set_group_claim(user_id: int, chat_id: int):
-    db = _get_db()
-    await db.group_claims.update_one(
-        {"user_id": user_id, "chat_id": chat_id},
-        {"$set": {"last_claim": time.time()}},
-        upsert=True,
-    )
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO group_claims (user_id, chat_id, last_claim) VALUES (?,?,?)
+               ON CONFLICT(user_id, chat_id) DO UPDATE SET last_claim=excluded.last_claim""",
+            (user_id, chat_id, time.time()),
+        )
+        await db.commit()
 
 
 # ─── Welcome ─────────────────────────────────────────────────────────────────
 
 async def get_welcome(chat_id: int) -> dict:
-    db = _get_db()
-    await db.welcome_settings.update_one(
-        {"chat_id": chat_id},
-        {"$setOnInsert": {"chat_id": chat_id, "enabled": False}},
-        upsert=True,
-    )
-    return await db.welcome_settings.find_one({"chat_id": chat_id}, {"_id": 0})
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute(
+            "INSERT INTO welcome_settings (chat_id) VALUES (?) ON CONFLICT(chat_id) DO NOTHING",
+            (chat_id,),
+        )
+        await db.commit()
+        row = await (await db.execute(
+            "SELECT * FROM welcome_settings WHERE chat_id=?", (chat_id,)
+        )).fetchone()
+        return _row(row)
 
 
 async def set_welcome(chat_id: int, enabled: bool):
-    db = _get_db()
-    await db.welcome_settings.update_one(
-        {"chat_id": chat_id},
-        {"$set": {"enabled": enabled}},
-        upsert=True,
-    )
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO welcome_settings (chat_id, enabled) VALUES (?,?)
+               ON CONFLICT(chat_id) DO UPDATE SET enabled=excluded.enabled""",
+            (chat_id, int(enabled)),
+        )
+        await db.commit()
+
+
+# ─── UNO game state ───────────────────────────────────────────────────────────
+
+async def get_uno_game(chat_id: int) -> dict | None:
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT data FROM uno_games WHERE chat_id=?", (chat_id,)
+        )).fetchone()
+        if not row:
+            return None
+        return json.loads(row[0])
+
+
+async def save_uno_game(game: dict):
+    game['last_activity'] = time.time()
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO uno_games (chat_id, data) VALUES (?,?)
+               ON CONFLICT(chat_id) DO UPDATE SET data=excluded.data""",
+            (game['chat_id'], json.dumps(game)),
+        )
+        await db.commit()
+
+
+async def delete_uno_game(chat_id: int):
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("DELETE FROM uno_games WHERE chat_id=?", (chat_id,))
+        await db.commit()
+
+
+# ─── Wordseek game state ──────────────────────────────────────────────────────
+
+async def get_wordseek(chat_id: int) -> dict | None:
+    async with aiosqlite.connect(DB_PATH) as db:
+        row = await (await db.execute(
+            "SELECT data FROM wordseek_games WHERE chat_id=?", (chat_id,)
+        )).fetchone()
+        if not row:
+            return None
+        return json.loads(row[0])
+
+
+async def save_wordseek(game: dict):
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO wordseek_games (chat_id, data) VALUES (?,?)
+               ON CONFLICT(chat_id) DO UPDATE SET data=excluded.data""",
+            (game['chat_id'], json.dumps(game)),
+        )
+        await db.commit()
+
+
+async def delete_wordseek(chat_id: int):
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("DELETE FROM wordseek_games WHERE chat_id=?", (chat_id,))
+        await db.commit()
