@@ -16,7 +16,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 # ── Bot branding ────────────────────────────────────────────────────────────
 BOT_NAME      = "sʜʀɪsᴛɪ ɢᴀᴍᴇ ᴘʟᴀʏᴇʀ"
 BOT_USERNAME  = "@SHRISTI_GAME_PLAYER_bot"
-POWERED_BY    = "⚡ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴍᴀᴅᴀʀᴀ"
+POWERED_BY    = "⚡ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴅᴇᴍᴏɴ"
 VERSION       = "v2.0"
 
 # ── Database ────────────────────────────────────────────────────────────────
