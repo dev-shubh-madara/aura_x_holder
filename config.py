@@ -14,8 +14,8 @@ API_HASH  = os.environ.get("API_HASH", "")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 # ── Bot branding ────────────────────────────────────────────────────────────
-BOT_NAME      = "sʜʀɪsᴛɪ ɢᴀᴍᴇ ᴘʟᴀʏᴇʀ"
-BOT_USERNAME  = "@SHRISTI_GAME_PLAYER_bot"
+BOT_NAME      = "ʀᴀᴊsʜʀᴇᴇ ɢᴀᴍᴇ"
+BOT_USERNAME  = "rajshree_game_player_bot"
 POWERED_BY    = "⚡ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴅᴇᴍᴏɴ"
 VERSION       = "v2.0"
 
